@@ -24,6 +24,7 @@ let taskData = [
     taskDescription: "Some description",
     taskSolution: ""
   }
+
 ];
 
 for(let i = 0; i<taskData.length; i++){
