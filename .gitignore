@@ -6,4 +6,9 @@ tmp
 coverage/
 .sass-cache
 .idea
+.babelrc
+.editorconfig
+.jshintrc
+Makefile
+
 
