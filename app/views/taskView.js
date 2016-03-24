@@ -14,5 +14,6 @@ export let TaskView = Backbone.View.extend({
     this.$el.html(template(this.taskData));
     return this;
   }
+
 });
 
