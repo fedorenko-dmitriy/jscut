@@ -10,8 +10,3 @@ let testView = new TestView();
 testView.getTestData();
 
   $('body').append(testView.render().$el);
-
-
-
-
-
