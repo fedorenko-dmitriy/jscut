@@ -16,7 +16,8 @@ module.exports = function(grunt) {
         dest: 'static/app.js'
       }
     },
-    "babel": {
+
+    babel: {
       options: {
         sourceMap: true,
         presets: ['babel-preset-es2015']
@@ -24,7 +25,6 @@ module.exports = function(grunt) {
       dist: {
         files: {
           'build/module.js': ['app/**/*.js']
-          //"static/app.js": "build/module.js"
         }
       }
     },
@@ -68,10 +68,21 @@ module.exports = function(grunt) {
         options: {
           reporter: 'spec',
           quiet: false, // Optionally suppress output to standard out (defaults to false)
-          clearRequireCache: false // Optionally clear the require cache before running tests (defaults to false)
+          clearRequireCache: false, // Optionally clear the require cache before running tests (defaults to false)
+          require: 'babel-register'
         },
         src: ['tests/*.js', 'tests/**/*.js']
       }
+    },
+
+    mocha_phantomjs: {
+      options: {
+        //reporter: 'spec',
+        //quiet: false, // Optionally suppress output to standard out (defaults to false)
+        //clearRequireCache: false, // Optionally clear the require cache before running tests (defaults to false)
+        require: 'babel-register'
+      },
+      all: ['tests/*.js', 'tests/**/*.js']
     }
   });
 
@@ -81,11 +92,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-mocha-test');
+  grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
   grunt.registerTask("babelify", ["babel"]);
-  grunt.registerTask("browserify_", ["browserify"]);
+  grunt.registerTask("deploy", ["browserify"]);
   grunt.registerTask("jshint_", ["jshint"]);
   grunt.registerTask('test', 'mochaTest');
+  grunt.registerTask('test_', 'mocha_phantomjs');
+
 
 
   grunt.registerTask('karma_', ['karma']);
