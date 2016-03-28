@@ -26,7 +26,7 @@ export let TaskView = Backbone.View.extend({
   },
 
   _clickBtnHandler: function(){
-
+    this.trigger("checkSolution", this.model.toJSON());
   },
 
   prepareData: function(){

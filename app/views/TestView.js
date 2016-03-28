@@ -15,7 +15,7 @@ export let TestView = Backbone.View.extend({
     options = options||{};
     this.model = options.model || new Backbone.Model();
     this._initEvents();
-
+    this.taskViews = [];
   },
 
   _initEvents: function(){
@@ -38,7 +38,17 @@ export let TestView = Backbone.View.extend({
   },
 
   appendTaskView: function(taskView){
+    this.taskViews.push(taskView);
     this.$el.append(taskView.prepareData().render().$el);
+    this._appendEvents(taskView);
+  },
+
+  _appendEvents: function(taskView){
+    this.listenTo(taskView,"checkSolution", this._checkSolution);
+  },
+
+  _checkSolution: function(model){
+    console.log(model);
   },
 
   render: function() {
