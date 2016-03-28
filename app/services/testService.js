@@ -1,5 +1,5 @@
 "use strict";
-let testData = [
+let testData = {tasks:[
   {
     number: 1,
     taskName : "Some name#1",
@@ -19,12 +19,11 @@ let testData = [
   //  taskSolution: ""
   //}
 
-];
+]};
 
 export let testService = {
-  getTests: function(){
+  getTest: function(){
     return testData;
-
   }
-}
+};
 
