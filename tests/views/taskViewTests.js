@@ -30,5 +30,27 @@ describe('Task View Tests', function () {
     taskView.model.set(taskData);
 
     expect(taskView.render.called).to.equal(true);
-  })
+  });
+
+  it("should trigger event 'checkSolution' when button clicked", ()=>{
+    let taskData = {"some": "data"};
+    taskView.model = new Backbone.Model(taskData);
+    taskView.prepareData().render();
+    sinon.spy(taskView,"trigger");
+
+    taskView.$("button").click();
+
+    expect(taskView.trigger.calledWith("checkSolution")).to.equal(true);
+  });
+
+  it("should send model.attributes when event 'checkSolution' triggered", ()=>{
+    let taskData = {"some": "data"};
+    taskView.model = new Backbone.Model(taskData);
+    taskView.prepareData().render();
+    sinon.spy(taskView,"trigger");
+
+    taskView.$("button").click();
+
+    expect(taskView.trigger.calledWith("checkSolution", taskView.model.toJSON())).to.equal(true);
+  });
 });
