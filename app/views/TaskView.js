@@ -6,6 +6,7 @@ Backbone.$ = $;
 let template = require("../templates/taskView/taskViewTpl.hbs");
 
 export let TaskView = Backbone.View.extend({
+  className: "task",
   initialize: function(options) {
     options = options||{};
     this.model = options.model || new Backbone.Model();
@@ -38,7 +39,6 @@ export let TaskView = Backbone.View.extend({
   },
 
   _showNotification: function(){
-    debugger;
     this.$(".notification").removeClass("show");
     if(this.model.get("isSolved")){
       this.$(".success").addClass("show");

@@ -10,12 +10,20 @@ import {testService} from "../services/testService.js";
 import { TaskView } from './TaskView';
 import { TaskModel } from '../models/TaskModel.js';
 
+let template = require("../templates/testView/testViewTpl.hbs");
+
 export let TestView = Backbone.View.extend({
+  className:"test",
+
   initialize: function(options) {
     options = options||{};
     this.model = options.model || new Backbone.Model();
     this._initEvents();
     this.taskViews = [];
+  },
+
+  events: {
+    "click button.taskNav" :  "_taskNavHandler"
   },
 
   _initEvents: function(){
@@ -51,12 +59,46 @@ export let TestView = Backbone.View.extend({
     console.log(model);
     var result = testService.checkTaskSolution(model.toJSON());
     model.set(result,{stop:true});
-    debugger;
+  },
+
+  _taskNavHandler: function(event){
+    var classNames = $(event.target).attr("class").split(" ");
+
+    for(let i = 0; i<classNames.length; i++){
+      if(classNames[i] === "prev"){
+        this._showPrevTask();
+        break;
+      }
+      if(classNames[i] === "next"){
+        this._showNextTask();
+        break;
+      }
+    }
+  },
+
+  _showPrevTask: function(){
+    this.$(".task").each(function(key, elem){
+      if($(elem).css("display")=="block" && key>0){
+        $(elem).prev().show();
+        $(elem).hide();
+        return false;
+      }
+    });
+  },
+
+  _showNextTask: function(){
+    this.$(".task").each(function(key, elem) {
+      if ($(elem).css("display") == "block" && key <= $(elem).length) {
+        $(elem).next().show();
+        $(elem).hide();
+        return false;
+      }
+    });
   },
 
   render: function() {
+    this.$el.prepend(template({}));
     return this;
   }
-
 });
 
