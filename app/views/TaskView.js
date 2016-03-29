@@ -13,20 +13,38 @@ export let TaskView = Backbone.View.extend({
   },
 
   events:{
-    "click button": "_clickBtnHandler"
+    "click button": "_clickBtnHandler",
+    "keyup textarea": "_writeSolutionToTeModel"
   },
 
   _initEvents: function(){
-    this.listenTo(this.model, "change", this._modelChanged)
+    this.listenTo(this.model, "change", this._modelChanged);
+    this.listenTo(this.model, "change:isSolved", this._showNotification);
   },
 
-  _modelChanged: function(){
-    this.prepareData();
-    this.render();
+  _modelChanged: function(model, options){
+    if(!options.stop){
+      this.prepareData();
+      this.render();
+    }
   },
 
   _clickBtnHandler: function(){
-    this.trigger("checkSolution", this.model.toJSON());
+    this.trigger("checkSolution", this.model);
+  },
+
+  _writeSolutionToTeModel: function(event){
+    this.model.set("taskSolution",$(event.target).val(),{silent:true})
+  },
+
+  _showNotification: function(){
+    debugger;
+    this.$(".notification").removeClass("show");
+    if(this.model.get("isSolved")){
+      this.$(".success").addClass("show");
+    } else {
+      this.$(".error").addClass("show");
+    }
   },
 
   prepareData: function(){

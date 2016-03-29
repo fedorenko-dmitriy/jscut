@@ -23,6 +23,15 @@ let testData = {tasks:[
 export let testService = {
   getTest: function(){
     return testData;
+  },
+
+  checkTaskSolution: function(task){
+    if(task.taskSolution){
+      task.isSolved = true;
+    } else {
+      task.isSolved = false;
+    }
+    return task;
   }
 };
 

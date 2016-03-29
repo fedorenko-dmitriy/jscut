@@ -2,3 +2,26 @@ body {
   font: 500 14px/21px 'Helvetica Neue', Helvetica, Arials;
   padding: 20px;
 }
+
+.notification{
+  display: none;
+  text-align: center;
+}
+
+.notification.show{
+  display: block;
+}
+
+.notification.success{
+  background-color: #009926;
+}
+
+.notification.error{
+  background-color: red;
+}
+
+.notification>a{
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+}

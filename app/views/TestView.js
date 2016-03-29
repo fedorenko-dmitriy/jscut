@@ -27,7 +27,7 @@ export let TestView = Backbone.View.extend({
   },
 
   _modelChanged: function(){
-      let tasks = this.model.get("tasks"),
+    let tasks = this.model.get("tasks"),
         length = tasks.length;
 
     for(let i= 0; i<length; i++){
@@ -49,6 +49,9 @@ export let TestView = Backbone.View.extend({
 
   _checkSolution: function(model){
     console.log(model);
+    var result = testService.checkTaskSolution(model.toJSON());
+    model.set(result,{stop:true});
+    debugger;
   },
 
   render: function() {
