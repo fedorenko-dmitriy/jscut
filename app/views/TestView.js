@@ -1,13 +1,11 @@
-/**
- * Created by user on 25.03.16.
- */
 "use strict";
+
 let $ = require('jquery-untouched');
 let Backbone = require('backbone');
 Backbone.$ = $;
 
 import {testService} from "../services/testService.js";
-import { TaskView } from './TaskView';
+import { taskViewFabrica } from './taskViewFabrica';
 import { TaskModel } from '../models/TaskModel.js';
 
 let template = require("../templates/testView/testViewTpl.hbs");
@@ -40,7 +38,7 @@ export let TestView = Backbone.View.extend({
 
     for(let i= 0; i<length; i++){
       let taskModel = new TaskModel(tasks[i]);
-      let taskView = new TaskView({model: taskModel});
+      let taskView = taskViewFabrica.create({model: taskModel});
       this.appendTaskView(taskView);
     }
   },
