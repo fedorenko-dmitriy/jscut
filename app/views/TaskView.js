@@ -52,6 +52,25 @@ export let TaskView = Backbone.View.extend({
     return this;
   },
 
+  show: function(){
+    this.$el.show();
+  },
+
+  hide: function(){
+    this.$el.hide();
+  },
+
+  isShow: function(){
+    if(!this.$el.css("display") && !this.$el.height() && !this.$el.width()){
+      return false;
+    }else if(this.$el.css("display") && this.$el.css("display") == "none"){
+      return false;
+    }else if(this.$el.css("display") && this.$el.css("display") !== "none"){
+      return true;
+    }
+
+  },
+
   render: function() {
     this.$el.html(template(this.taskData));
     return this;

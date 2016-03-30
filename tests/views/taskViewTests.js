@@ -1,8 +1,5 @@
 "use strict";
-//let $ = require('jquery-untouched');
 let Backbone = require('backbone');
-//Backbone.$ = $;
-
 
 import {TaskView} from '../../app/views/TaskView.js';
 
@@ -16,6 +13,11 @@ describe('Task View Tests', function () {
     taskModel = new Backbone.Model(taskData);
     taskData = {"some": "data"};
     taskView = new TaskView({model:taskModel});
+    document.body.appendChild(taskView.el);
+  });
+
+  afterEach(()=>{
+    taskView.$el.remove();
   });
 
   describe("method prepareData", ()=>{
@@ -66,8 +68,8 @@ describe('Task View Tests', function () {
     it("should render with hide any notifications", ()=>{
       taskView.prepareData().render();
 
-      expect(taskView.$(".notification").width() == 0).to.equal(true);
-      expect(taskView.$(".notification").height() == 0).to.equal(true);
+      expect(taskView.$(".notification").css("display") == "none").to.equal(false);
+      expect(taskView.$(".notification").css("display") == "none").to.equal(false);
     });
 
     it("should show success notification when model attribute 'isSolved' is changed", ()=>{
@@ -84,6 +86,32 @@ describe('Task View Tests', function () {
       taskModel.set(isSolvedAttr, {stop:true});
 
       expect(taskView.$(".error").attr("display") == "none").to.not.equal(true);
+    });
+  });
+
+  describe("visibility", function(){
+    it("should return false if 'taskView' hide state when method 'isShow' is called", ()=>{
+      taskView.$el.hide();
+      expect(taskView.isShow()).to.equal(false);
+    });
+
+    it("should return true if 'taskView' show state when method 'isShow' is called", ()=>{
+      taskView.$el.show();
+      expect(taskView.isShow()).to.equal(true);
+    });
+
+    it("should add display attribute as 'block' method 'isShow' is called", ()=>{
+      taskView.$el.hide();
+      taskView.show();
+
+      expect(taskView.isShow()).to.equal(true);
+    });
+
+    it("should remove display attribute as 'block' method 'isShow' is called", ()=>{
+      taskView.$el.show();
+      taskView.hide();
+
+      expect(taskView.isShow()).to.equal(false);
     });
   });
 });

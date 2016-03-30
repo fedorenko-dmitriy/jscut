@@ -39,6 +39,7 @@
     "karma-story-reporter": "~0.2.2",
     "karma-sauce-launcher": "~0.1.8",
 
+    "mocha-sinon": "latest",
 
     "grunt-mocha-phantomjs":">=3.0.0",
 

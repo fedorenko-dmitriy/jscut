@@ -52,7 +52,7 @@ export let TestView = Backbone.View.extend({
   },
 
   _appendEvents: function(taskView){
-    this.listenTo(taskView,"checkSolution", this._checkSolution);
+    this.listenTo(taskView, "checkSolution", this._checkSolution);
   },
 
   _checkSolution: function(model){
@@ -77,24 +77,25 @@ export let TestView = Backbone.View.extend({
   },
 
   _showPrevTask: function(){
-    this.$(".task").each(function(key, elem){
-      if($(elem).css("display")=="block" && key>0){
-        $(elem).prev().show();
-        $(elem).hide();
-        return false;
+    for(let i=0; i<this.taskViews.length; i++) {
+      if (this.taskViews[i].isShow() && this.taskViews[i-1]) {
+        this.taskViews[i-1].show();
+        this.taskViews[i].hide();
+        break;
       }
-    });
+    }
   },
 
   _showNextTask: function(){
-    this.$(".task").each(function(key, elem) {
-      if ($(elem).css("display") == "block" && key <= $(elem).length) {
-        $(elem).next().show();
-        $(elem).hide();
-        return false;
+    for(let e=0; e<this.taskViews.length; e++) {
+      if (this.taskViews[e].isShow() && this.taskViews[e+1]) {
+        this.taskViews[e+1].show();
+        this.taskViews[e].hide();
+        break;
       }
-    });
+    }
   },
+
 
   render: function() {
     this.$el.prepend(template({}));
