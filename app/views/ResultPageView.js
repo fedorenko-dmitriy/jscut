@@ -6,7 +6,7 @@ let Backbone = require('backbone');
 Backbone.$ = $;
 
 import {testService} from "../services/testService.js";
-import { taskViewFabrica } from './taskViewFabrica';
+import { taskViewFabrica } from './taskViewFactory';
 import { TaskModel } from '../models/TaskModel.js';
 
 let template = require("../templates/resultPageView/resultPageViewTpl.hbs");
@@ -24,14 +24,14 @@ export let ResultPageView = Backbone.View.extend({
   },
 
   _initEvents: function _initEvents() {
-    //this.listenTo(this.model, "change", this._modelChanged);
+    this.listenTo(this.model, "change", this._modelChanged);
   },
 
-  _showTest: function _showTest() {
+  _showTest: function() {
     this.trigger("showTest");
   },
 
-  _modelChanged: function _modelChanged() {
+  _modelChanged: function() {
     this.render();
   },
 
@@ -52,7 +52,6 @@ export let ResultPageView = Backbone.View.extend({
   },
 
   show: function() {
-    this.render();
     this.$el.show();
   },
 

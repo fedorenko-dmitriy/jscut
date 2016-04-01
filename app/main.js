@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 var $ = require('jquery-untouched');
 var Backbone = require('backbone');
 var helpers = require("./util/hbs-helpers");

@@ -5,7 +5,7 @@ let Backbone = require('backbone');
 Backbone.$ = $;
 
 import { testService } from "../services/testService.js";
-import { taskViewFabrica } from './taskViewFabrica';
+import { taskViewFabrica } from './taskViewFactory';
 import { TaskModel } from '../models/TaskModel.js';
 
 let template = require("../templates/testView/testViewTpl.hbs");
@@ -27,7 +27,6 @@ export let TestView = Backbone.View.extend({
 
   _initEvents: function(){
     this.listenTo(this.model,"time", this._updateTimer);
-    this.listenTo(this.model,"change:testEnded", this._showResults);
   },
 
   getTestData: function(){
@@ -63,6 +62,7 @@ export let TestView = Backbone.View.extend({
     console.log(model);
     var result = testService.checkTaskSolution(model.toJSON());
     model.set(result, {stop:true});
+    this.model.trigger("change", this.model);
   },
 
   _showResults: function(){

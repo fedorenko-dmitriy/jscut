@@ -28,13 +28,6 @@ describe('Task View Tests', function () {
     });
   });
 
-  it("should render when model trigger event 'change'", ()=>{
-    sinon.spy(taskView,"render");
-    taskModel.set(taskData);
-
-    expect(taskView.render.called).to.equal(true);
-  });
-
   it("should trigger event 'checkSolution' when button clicked", ()=>{
     taskView.prepareData().render();
     sinon.spy(taskView,"trigger");

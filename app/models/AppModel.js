@@ -2,21 +2,10 @@
 let Backbone = require('backbone');
 
 export let AppModel = Backbone.Model.extend({
-  //defaults:{
-  //  timer:{}
-  //},
-
   initialize: function(){
     startTimer.apply(this);
 
     this.on("time", this.console)
-  },
-
-  console: function(){
-    console.log("===========");
-    console.log("passTime == "+ this.get("timer").passedMinutes+":"+this.get("timer").passedSeconds);
-    console.log("remainingTime == "+this.get("timer").remainingMinutes+":"+this.get("timer").remainingSeconds);
-    console.log("===========");
   },
 
   toJSON: function(){
@@ -30,6 +19,9 @@ export let AppModel = Backbone.Model.extend({
     return objJSON;
   }
 });
+
+
+
 let timer = {};
 let setTimer;
 let absoluteTime = 0;

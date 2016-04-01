@@ -17,12 +17,11 @@ describe('Test View Tests', function () {
     testView.$el.remove();
   });
 
-
   it("should get data when method 'getTestData' is called", ()=>{
-    sinon.stub(testModel, "trigger");
+    sinon.stub(testView, "setInitData");
     testView.getTestData();
 
-    expect(testModel.trigger.called).to.equal(true);
+    expect(testView.setInitData.called).to.equal(true);
   });
 
   it("should append sub views into testView.taskViews when method 'getTestData' is called", ()=>{
@@ -35,14 +34,25 @@ describe('Test View Tests', function () {
     expect(testView.$el.children()).to.have.length.above(1);
   });
 
-  it("should append sub views into taskView.$el when method 'getTestData' is called", ()=>{
-    testView.getTestData();
-    expect(testView.$el.children()).to.have.length.above(1);
+  it("should render time when model is triggered 'time' event", ()=>{
+    sinon.stub(testView, "trigger");
+    testView.render();
+    testModel.set("timer", {
+      remainingMinutes: "00",
+      remainingSeconds: "00"
+    });
+    testModel.trigger("time");
+
+    expect(testView.$(".timer").text()).to.eql("00:00");
   });
 
-  //it("should check solution and set receive data to ", ()=>{
-  //
-  //});
+  it("should trigger event 'showResults' when model attribute timer.testEnded is true", ()=>{
+    sinon.stub(testView, "trigger");
+    testModel.set("timer", {testEnded: true});
+    testModel.trigger("time");
+
+    expect(testView.trigger.calledWith("showResults"));
+  });
 
   describe("navigation behaviour", ()=>{
     it("should change view to next when button 'prev' is pressed", ()=>{
@@ -75,6 +85,32 @@ describe('Test View Tests', function () {
       expect(testView.taskViews[0].isShow()).to.equal(false);
       expect(testView.taskViews[1].isShow()).to.equal(true);
 
+    });
+  });
+
+  describe("visibility", function(){
+    it("should return false if 'testView' hide state when method 'isShow' is called", ()=>{
+      testView.$el.hide();
+      expect(testView.isShow()).to.equal(false);
+    });
+
+    it("should return true if 'testView' show state when method 'isShow' is called", ()=>{
+      testView.$el.show();
+      expect(testView.isShow()).to.equal(true);
+    });
+
+    it("should add display attribute as 'block' method 'isShow' is called", ()=>{
+      testView.$el.hide();
+      testView.show();
+
+      expect(testView.isShow()).to.equal(true);
+    });
+
+    it("should remove display attribute as 'block' method 'isShow' is called", ()=>{
+      testView.$el.show();
+      testView.hide();
+
+      expect(testView.isShow()).to.equal(false);
     });
   });
 });
