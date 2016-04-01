@@ -33,3 +33,7 @@ body {
 .task:first-of-type{
    display: block;
  }
+
+.task:first-child{
+   display: block;
+}

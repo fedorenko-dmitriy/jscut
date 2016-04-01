@@ -1,0 +1,12 @@
+<button>Show test</button>
+{{#each data}}
+  {{#each this}}
+    <div class="testResults">
+      {{number}}
+      {{taskName}}
+      {{#ifvalue isSolved value=0}}не решено{{/ifvalue}}
+      {{#ifvalue isSolved value=1}}решено{{/ifvalue}}
+    </div>
+  {{/each}}
+{{/each}}
+
