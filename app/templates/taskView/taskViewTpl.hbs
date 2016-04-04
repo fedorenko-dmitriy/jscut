@@ -3,12 +3,37 @@
     <div class="title">Task description</div>
     <div class="text">{{taskDescription}}</div>
 </div>
+<div class="answerBlock {{taskType}}">
+  {{#ifvalue taskType value="string"}}
+      <div class="title">Answer</div>
+      <div class="text">
+          <textarea name="" id="" cols="30" rows="10">{{taskSolvetion}}</textarea>
+      </div>
+  {{/ifvalue}}
 
-<div class="answerBlock">
-    <div class="title">Answer</div>
-    <div class="text">
-        <textarea name="" id="" cols="30" rows="10">{{taskSolvetion}}</textarea>
-    </div>
+  {{#ifvalue taskType value="evaluate"}}
+      <div class="title">Answer</div>
+      <div class="text">
+          <textarea name="" id="" cols="30" rows="10">{{taskSolvetion}}</textarea>
+      </div>
+  {{/ifvalue}}
+
+  {{#ifvalue taskType value="select"}}
+    {{#each variantsOfSolutions}}
+      <div>
+          <input type="radio" name="select" value="{{@index}}"/> <label for="">{{this}}</label>
+      </div>
+    {{/each}}
+  {{/ifvalue}}
+
+  {{#ifvalue taskType value="multiSelect"}}
+    {{#each variantsOfSolutions}}
+      <div>
+          <input type="checkbox" name="multiSelect" value="{{@index}}"/>  <label for="">{{this}}</label>
+      </div>
+    {{/each}}
+  {{/ifvalue}}
+
 </div>
 
 <button>Check task solution</button>

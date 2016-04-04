@@ -39,6 +39,8 @@ export let TestView = Backbone.View.extend({
   setInitData: function(initTestData){
     this.model.set(initTestData, {silent: true});
 
+    this.model.trigger("change:duration"); //ToDo Hack It must resolve and remove
+
     let tasks = this.model.get("tasks"), length = tasks.length;
 
     for (let i = 0; i < length; i++) {

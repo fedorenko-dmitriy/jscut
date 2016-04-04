@@ -10,8 +10,9 @@ Backbone.$ = $;
 import { TestView } from './views/TestView';
 import { AppModel } from './models/AppModel'
 import { ResultPageView } from './views/ResultPageView';
+import { timeService } from './services/timeService.js'
 
-let appModel = new AppModel(),
+let appModel = new AppModel({timeService: timeService}),
     testView = new TestView({model: appModel}),
     resultPageView = new ResultPageView({model: appModel});
 

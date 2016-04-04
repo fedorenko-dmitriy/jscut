@@ -1,5 +1,6 @@
 "use strict";
 let $ = require('jquery-untouched');
+let _ = require('underscore');
 let Backbone = require('backbone');
 Backbone.$ = $;
 
@@ -15,7 +16,8 @@ export let TaskView = Backbone.View.extend({
 
   events:{
     "click button": "_clickBtnHandler",
-    "keyup textarea": "_writeSolutionToTheModel"
+    "click input": "_selectMethodToWriteSolution",
+    "keyup textarea": "_selectMethodToWriteSolution"
   },
 
   _initEvents: function(){
@@ -26,8 +28,39 @@ export let TaskView = Backbone.View.extend({
     this.trigger("checkSolution", this.model);
   },
 
-  _writeSolutionToTheModel: function(event){
-    this.model.set("taskSolution",$(event.target).val(),{silent:true})
+  _selectMethodToWriteSolution: function(event){
+    let target = $(event.target);
+
+    if(target.parents(".string").length || target.parents(".evaluate").length){
+      this._writeStringSolutionToTheModel(target);
+    }else if(target.parents(".select").length){
+      this._writeSelectSolutionToTheModel(target);
+    }else if(target.parents(".multiSelect").length){
+      this._writeMultiSelectSolutionToTheModel(target);
+    }else{
+      throw "something wrong with solution type";
+    }
+  },
+
+  _writeStringSolutionToTheModel: function(target){
+    this.model.set("taskSolution",[target.val()],{silent:true})
+  },
+
+  _writeSelectSolutionToTheModel: function(target){
+    console.log("select "+target.val());
+    this.model.set("taskSolution",[target.val()],{silent:true})
+  },
+
+  _writeMultiSelectSolutionToTheModel: function(target){
+    let taskSolution = this.model.get("taskSolution");
+    console.log("multiSelect a " +taskSolution.toString());
+    if(_.indexOf(taskSolution, target.val())>-1){
+      taskSolution = _.without(taskSolution, target.val())
+    }else{
+      taskSolution.push(target.val())
+    }
+    console.log("multiSelect b " +taskSolution.toString());
+    this.model.set("taskSolution",taskSolution,{silent:true})
   },
 
   _showNotification: function(){
@@ -60,7 +93,6 @@ export let TaskView = Backbone.View.extend({
     }else if(this.$el.css("display") && this.$el.css("display") !== "none"){
       return true;
     }
-
   },
 
   render: function() {
