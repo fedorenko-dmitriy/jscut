@@ -60,7 +60,7 @@ export let testService = {
 
   checkTaskSolution: function(task){
     let checkingTask = getTask({number:task.number});
-    let taskIsFailed;
+    let taskIsFailed = 0;
     let result;
 
     for(let i=0; i<task.taskSolution.length; i++){
@@ -74,12 +74,15 @@ export let testService = {
         ? result
         : parseInt(result);
 
-      if(checkingTask.problemSolution.indexOf(taskSolution) === -1){
-        taskIsFailed = true;
+      if(checkingTask.problemSolution.indexOf(taskSolution) > -1){
+        taskIsFailed += 1;
+      }else{
+        taskIsFailed = 0;
         break;
       }
     }
-    if(!taskIsFailed){
+
+    if(task.taskSolution.length && taskIsFailed === checkingTask.problemSolution.length){
       task.isSolved = checkingTask.problemPoint;
     } else {
       task.isSolved = 0;
