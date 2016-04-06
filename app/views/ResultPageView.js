@@ -20,7 +20,7 @@ export let ResultPageView = Backbone.View.extend({
     "click button": "_showTest"
   },
 
-  _initEvents: function _initEvents() {
+  _initEvents: function() {
     this.listenTo(this.model, "change", this._modelChanged);
   },
 

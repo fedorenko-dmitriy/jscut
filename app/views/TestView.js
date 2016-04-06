@@ -1,5 +1,6 @@
 "use strict";
 
+let _ = require('underscore');
 let $ = require('jquery-untouched');
 let Backbone = require('backbone');
 Backbone.$ = $;
@@ -47,15 +48,10 @@ export let TestView = Backbone.View.extend({
 
     tasks.each(function(model){
       let taskView = taskViewFactory.create(model);
-      self.appendTaskView(taskView);
+      self.taskViews.push(taskView);
     });
 
     this.currentView = this.taskViews[0];
-  },
-
-  appendTaskView: function(taskView){
-    this.taskViews.push(taskView);
-    this.$el.append(taskView.prepareData().render().$el);
   },
 
   _checkSolution: function(){
@@ -106,7 +102,11 @@ export let TestView = Backbone.View.extend({
   },
 
   render: function() {
-    this.$el.prepend(template({}));
+    var self = this;
+    this.$el.html(template({}));
+    _.each(this.taskViews, function(taskView){
+      self.$(".tasks").append(taskView.prepareData().render().$el);
+    });
     return this;
   }
 }).extend(displayMixin);
