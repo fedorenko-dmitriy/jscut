@@ -61,7 +61,7 @@ export let TestView = Backbone.View.extend({
   _checkSolution: function(){
     let model = this.currentView.model;
     console.log(model);
-    var result = testService.checkTaskSolution(model.toJSON());
+    let result = testService.checkTaskSolution(model.toJSON());
     model.set(result);
     this.model.trigger("change", this.model);
   },
@@ -71,40 +71,29 @@ export let TestView = Backbone.View.extend({
   },
 
   _taskNavHandler: function(event){
-    var classNames = $(event.target).attr("class").split(" ");
+    var target = $(event.target);
+    let index = this.taskViews.indexOf(this.currentView);
 
-    for(let i = 0; i<classNames.length; i++){
-      if(classNames[i] === "prev"){
-        this._showPrevTask();
-        break;
-      }
-      if(classNames[i] === "next"){
-        this._showNextTask();
-        break;
-      }
-    }
+    target.hasClass("prev") && this._showPrevTask(index);
+    target.hasClass("next") && this._showNextTask(index);
   },
 
-  _showPrevTask: function(){
-    for(let i=0; i<this.taskViews.length; i++) {
-      if (this.taskViews[i].isShow() && this.taskViews[i-1]) {
-        this.currentView = this.taskViews[i-1];
-        this.taskViews[i-1].show();
-        this.taskViews[i].hide();
-        break;
-      }
-    }
+  _showPrevTask: function(index){
+    if(!this.taskViews[index-1]){ return; }
+
+    this.taskViews[index-1].show();
+    this.taskViews[index].hide();
+    this.currentView = this.taskViews[index-1];
+
   },
 
-  _showNextTask: function(){
-    for(let e=0; e<this.taskViews.length; e++) {
-      if (this.taskViews[e].isShow() && this.taskViews[e+1]) {
-        this.currentView = this.taskViews[e+1];
-        this.taskViews[e+1].show();
-        this.taskViews[e].hide();
-        break;
-      }
-    }
+  _showNextTask: function(index){
+    if(!this.taskViews[index+1]){ return; }
+
+    this.taskViews[index+1].show();
+    this.taskViews[index].hide();
+
+    this.currentView = this.taskViews[index+1];
   },
 
   _updateTimer: function(){
