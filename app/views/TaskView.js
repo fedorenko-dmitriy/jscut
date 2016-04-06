@@ -15,17 +15,12 @@ export let TaskView = Backbone.View.extend({
   },
 
   events:{
-    "click button": "_clickBtnHandler",
     "click input": "_selectMethodToWriteSolution",
     "keyup textarea": "_selectMethodToWriteSolution"
   },
 
   _initEvents: function(){
     this.listenTo(this.model, "change:isSolved", this._showNotification);
-  },
-
-  _clickBtnHandler: function(){
-    this.trigger("checkSolution", this.model);
   },
 
   _selectMethodToWriteSolution: function(event){

@@ -5,8 +5,8 @@ let Backbone = require('backbone');
 Backbone.$ = $;
 
 import { testService } from "../services/testService.js";
-import { taskViewFabrica } from './taskViewFactory';
-import { TaskModel } from '../models/TaskModel.js';
+import { taskViewFactory } from './taskViewFactory';
+//import { TaskModel } from '../models/TaskModel.js';
 
 let template = require("../templates/testView/testViewTpl.hbs");
 
@@ -18,9 +18,11 @@ export let TestView = Backbone.View.extend({
     this.model = options.model;
     this._initEvents();
     this.taskViews = [];
+    this.currentView = {};
   },
 
   events: {
+    "click button.checkSolution": "_checkSolution",
     "click button.taskNav" :  "_taskNavHandler",
     "click button.showResults" : "_showResults"
   },
@@ -44,10 +46,11 @@ export let TestView = Backbone.View.extend({
     let tasks = this.model.get("tasks"), length = tasks.length;
 
     for (let i = 0; i < length; i++) {
-      tasks[i] = new TaskModel(tasks[i]);
-      let taskView = taskViewFabrica.create({model: tasks[i]});
+      let taskView = taskViewFactory.create(tasks[i]);
+      tasks[i] = taskView.model;
       this.appendTaskView(taskView);
     }
+    this.currentView = this.taskViews[0];
   },
 
   appendTaskView: function(taskView){
@@ -60,7 +63,8 @@ export let TestView = Backbone.View.extend({
     this.listenTo(taskView, "checkSolution", this._checkSolution);
   },
 
-  _checkSolution: function(model){
+  _checkSolution: function(){
+    let model = this.currentView.model;
     console.log(model);
     var result = testService.checkTaskSolution(model.toJSON());
     model.set(result, {stop:true});
@@ -89,6 +93,7 @@ export let TestView = Backbone.View.extend({
   _showPrevTask: function(){
     for(let i=0; i<this.taskViews.length; i++) {
       if (this.taskViews[i].isShow() && this.taskViews[i-1]) {
+        this.currentView = this.taskViews[i-1];
         this.taskViews[i-1].show();
         this.taskViews[i].hide();
         break;
@@ -99,6 +104,7 @@ export let TestView = Backbone.View.extend({
   _showNextTask: function(){
     for(let e=0; e<this.taskViews.length; e++) {
       if (this.taskViews[e].isShow() && this.taskViews[e+1]) {
+        this.currentView = this.taskViews[e+1];
         this.taskViews[e+1].show();
         this.taskViews[e].hide();
         break;
