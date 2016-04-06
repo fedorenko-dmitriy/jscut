@@ -4,9 +4,7 @@ let $ = require('jquery-untouched');
 let Backbone = require('backbone');
 Backbone.$ = $;
 
-import {testService} from "../services/testService.js";
-import { taskViewFactory } from './taskViewFactory';
-import { TaskModel } from '../models/TaskModel.js';
+let displayMixin = require('../mixins/displayMixin');
 
 let template = require("../templates/resultPageView/resultPageViewTpl.hbs");
 
@@ -38,24 +36,5 @@ export let ResultPageView = Backbone.View.extend({
     console.log(this.model.toJSON().tasks);
     this.$el.html(template({data: this.model.toJSON()}));
     return this;
-  },
-
-  isShow: function isShow() {
-    if (!this.$el.css("display") && !this.$el.height() && !this.$el.width()) {
-      return false;
-    } else if (this.$el.css("display") && this.$el.css("display") == "none") {
-      return false;
-    } else if (this.$el.css("display") && this.$el.css("display") !== "none") {
-      return true;
-    }
-  },
-
-  show: function() {
-    this.$el.show();
-  },
-
-  hide: function hide() {
-    this.$el.hide();
   }
-
-});
+}).extend(displayMixin);

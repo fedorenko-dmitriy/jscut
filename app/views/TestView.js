@@ -4,6 +4,8 @@ let $ = require('jquery-untouched');
 let Backbone = require('backbone');
 Backbone.$ = $;
 
+let displayMixin = require('../mixins/displayMixin');
+
 import { testService } from "../services/testService.js";
 import { taskViewFactory } from './taskViewFactory';
 
@@ -60,7 +62,7 @@ export let TestView = Backbone.View.extend({
     let model = this.currentView.model;
     console.log(model);
     var result = testService.checkTaskSolution(model.toJSON());
-    model.set(result, {stop:true});
+    model.set(result);
     this.model.trigger("change", this.model);
   },
 
@@ -114,27 +116,9 @@ export let TestView = Backbone.View.extend({
     }
   },
 
-  isShow: function(){
-    if(!this.$el.css("display") && !this.$el.height() && !this.$el.width()){
-      return false;
-    }else if(this.$el.css("display") && this.$el.css("display") == "none"){
-      return false;
-    }else if(this.$el.css("display") && this.$el.css("display") !== "none"){
-      return true;
-    }
-  },
-
-  show: function(){
-    this.$el.show();
-  },
-
-  hide: function(){
-    this.$el.hide();
-  },
-
   render: function() {
     this.$el.prepend(template({}));
     return this;
   }
-});
+}).extend(displayMixin);
 
