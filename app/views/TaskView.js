@@ -28,35 +28,34 @@ export let TaskView = Backbone.View.extend({
   _selectMethodToWriteSolution: function(event){
     let target = $(event.target);
 
-    if(target.parents(".string").length || target.parents(".evaluate").length){
-      this._writeStringSolutionToTheModel(target);
-    }else if(target.parents(".select").length){
-      this._writeSelectSolutionToTheModel(target);
-    }else if(target.parents(".multiSelect").length){
-      this._writeMultiSelectSolutionToTheModel(target);
-    }else{
-      throw "something wrong with solution type";
+    if(this._hasOneOfClass(["string", "evaluate", "select"], target)){
+      this._writeSolutionToTheModel(target)
+    }
+
+    if(this._hasOneOfClass(["multiSelect"], target)){
+      this._writeMultiSolutionToTheModel(target)
     }
   },
+  _hasOneOfClass: function(checkingClassList, target){
+    let parents = target.parents();
+    return _.some(checkingClassList, function(className){
+      return parents.hasClass(className);
+    })
+  },
 
-  _writeStringSolutionToTheModel: function(target){
+  _writeSolutionToTheModel: function(target){
     this.model.set("taskSolution",[target.val()],{silent:true})
   },
 
-  _writeSelectSolutionToTheModel: function(target){
-    console.log("select "+target.val());
-    this.model.set("taskSolution",[target.val()],{silent:true})
-  },
-
-  _writeMultiSelectSolutionToTheModel: function(target){
+  _writeMultiSolutionToTheModel: function(target){
     let taskSolution = this.model.get("taskSolution");
-    console.log("multiSelect a " +taskSolution.toString());
+
     if(_.indexOf(taskSolution, target.val())>-1){
       taskSolution = _.without(taskSolution, target.val())
     }else{
       taskSolution.push(target.val())
     }
-    console.log("multiSelect b " +taskSolution.toString());
+
     this.model.set("taskSolution",taskSolution,{silent:true})
   },
 
