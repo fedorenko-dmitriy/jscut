@@ -6,7 +6,6 @@ Backbone.$ = $;
 
 import { testService } from "../services/testService.js";
 import { taskViewFactory } from './taskViewFactory';
-//import { TaskModel } from '../models/TaskModel.js';
 
 let template = require("../templates/testView/testViewTpl.hbs");
 
@@ -39,28 +38,22 @@ export let TestView = Backbone.View.extend({
   },
 
   setInitData: function(initTestData){
-    this.model.set(initTestData, {silent: true});
+    var self = this;
+    this.model.set(initTestData);
 
-    this.model.trigger("change:duration"); //ToDo Hack It must resolve and remove
+    let tasks = this.model.get("tasks");
 
-    let tasks = this.model.get("tasks"), length = tasks.length;
+    tasks.each(function(model){
+      let taskView = taskViewFactory.create(model);
+      self.appendTaskView(taskView);
+    });
 
-    for (let i = 0; i < length; i++) {
-      let taskView = taskViewFactory.create(tasks[i]);
-      tasks[i] = taskView.model;
-      this.appendTaskView(taskView);
-    }
     this.currentView = this.taskViews[0];
   },
 
   appendTaskView: function(taskView){
     this.taskViews.push(taskView);
     this.$el.append(taskView.prepareData().render().$el);
-    this._appendEvents(taskView);
-  },
-
-  _appendEvents: function(taskView){
-    this.listenTo(taskView, "checkSolution", this._checkSolution);
   },
 
   _checkSolution: function(){

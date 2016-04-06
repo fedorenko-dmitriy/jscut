@@ -1,12 +1,11 @@
-/**
- * Created by user on 31.03.16.
- */
+"use strict";
+
 let $ = require('jquery-untouched');
 let Backbone = require('backbone');
 Backbone.$ = $;
 
 import {testService} from "../services/testService.js";
-import { taskViewFabrica } from './taskViewFactory';
+import { taskViewFactory } from './taskViewFactory';
 import { TaskModel } from '../models/TaskModel.js';
 
 let template = require("../templates/resultPageView/resultPageViewTpl.hbs");

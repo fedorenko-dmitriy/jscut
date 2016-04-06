@@ -1,4 +1,5 @@
 "use strict";
+let _ = require('underscore');
 let Backbone = require('backbone');
 
 export let AppModel = Backbone.Model.extend({
@@ -10,6 +11,13 @@ export let AppModel = Backbone.Model.extend({
     }
 
     this._initEvents();
+  },
+
+  set: function(params){
+    if(_.isObject(params) && _.isArray(params.tasks)){
+      params.tasks = new Backbone.Collection(params.tasks);
+    }
+    Backbone.Model.prototype.set.apply(this, arguments);
   },
 
   _initEvents: function(){
@@ -28,12 +36,8 @@ export let AppModel = Backbone.Model.extend({
 
   toJSON: function(){
     let objJSON = Backbone.Model.prototype.toJSON.apply(this);
-    objJSON.tasks = [];
+    objJSON.tasks = this.get("tasks").toJSON();
 
-    let tasks = this.get("tasks");
-    for(let i=0; i<tasks.length; i++){
-      objJSON.tasks.push(tasks[i].toJSON());
-    }
     return objJSON;
   }
 });
