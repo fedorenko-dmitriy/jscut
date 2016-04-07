@@ -25,7 +25,7 @@ let MainView = Backbone.View.extend({
   },
 
   _initEvents: function(){
-    this.listenTo(testView, "showResults",this._showResultPage);
+    this.listenTo(testView, "showResultsPage",this._showResultPage);
     this.listenTo(resultPageView, "showTest",this._showTestPage);
   },
 

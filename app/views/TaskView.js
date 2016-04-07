@@ -23,40 +23,22 @@ export let TaskView = Backbone.View.extend({
 
   _initEvents: function(){
     this.listenTo(this.model, "change:isSolved", this._showNotification);
+
+    this.on("method::_setSolutionToTheModel", this._setSolutionToTheModel);
+    this.on("method::_setMultiSolutionToTheModel", this._setMultiSolutionToTheModel);
   },
 
   _selectMethodToWriteSolution: function(event){
     let target = $(event.target);
+    let value = target.val();
 
     if(this._hasOneOfClass(["string", "evaluate", "select"], target)){
-      this._writeSolutionToTheModel(target)
+      this.trigger("method::_setSolutionToTheModel", value);
     }
 
     if(this._hasOneOfClass(["multiSelect"], target)){
-      this._writeMultiSolutionToTheModel(target)
+      this.trigger("method::_setMultiSolutionToTheModel", value);
     }
-  },
-  _hasOneOfClass: function(checkingClassList, target){
-    let parents = target.parents();
-    return _.some(checkingClassList, function(className){
-      return parents.hasClass(className);
-    })
-  },
-
-  _writeSolutionToTheModel: function(target){
-    this.model.set("taskSolution",[target.val()],{silent:true})
-  },
-
-  _writeMultiSolutionToTheModel: function(target){
-    let taskSolution = this.model.get("taskSolution");
-
-    if(_.indexOf(taskSolution, target.val())>-1){
-      taskSolution = _.without(taskSolution, target.val())
-    }else{
-      taskSolution.push(target.val())
-    }
-
-    this.model.set("taskSolution",taskSolution,{silent:true})
   },
 
   _showNotification: function(){
@@ -68,14 +50,42 @@ export let TaskView = Backbone.View.extend({
     }
   },
 
-  prepareData: function(){
-    this.taskData = this.model.toJSON();
+  _hasOneOfClass: function(checkingClassList, target){
+    let parents = target.parents();
+    return _.some(checkingClassList, function(className){
+      return parents.hasClass(className);
+    })
+  },
+
+  /*API*/
+
+  render: function() {
+    this.$el.html(template(this.model.toJSON()));
     return this;
   },
 
-  render: function() {
-    this.$el.html(template(this.taskData));
-    return this;
+  /*Controller*/
+
+
+
+  _setSolutionToTheModel: function(value){
+    this.model.set("taskSolution",[value],{silent:true})
+  },
+
+  _setMultiSolutionToTheModel: function(value){
+    let taskSolution = this.model.get("taskSolution");
+
+    if(_.indexOf(taskSolution, value)>-1){
+      taskSolution = _.without(taskSolution, value)
+    }else{
+      taskSolution.push(value)
+    }
+
+    this.model.set("taskSolution",taskSolution,{silent:true})
   }
+
+
+
+
 }).extend(displayMixin);
 
