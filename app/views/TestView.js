@@ -24,14 +24,46 @@ export let TestView = Backbone.View.extend({
   },
 
   events: {
-    "click button.checkSolution": "_checkSolution",
-    "click button.taskNav" :  "_taskNavHandler",
-    "click button.showResults" : "_showResults"
+    "click button.checkSolution": "_clickBtnCheckSolution",
+    "click button.taskNav" :  "_clickBtnTaskNav",
+    "click button.showResults" : "_clickBtnShowResults"
   },
 
   _initEvents: function(){
-    this.listenTo(this.model,"time", this._updateTimer);
+    this.listenTo(this.model,"time", this.updateTimer);
+
+    this.on("method::_checkSolutionHandler", this._checkSolutionHandler);
+    this.on("method::_showResultsHandler", this._showResultsHandler);
+    this.on("method::_taskNavHandler", this._taskNavHandler);
   },
+
+  _clickBtnCheckSolution: function(){
+    this.trigger("method::_checkSolutionHandler");
+  },
+
+  _clickBtnShowResults: function(){
+    this.trigger("method::_showResultsHandler");
+  },
+
+  _clickBtnTaskNav: function(event){
+    let className;
+    let target = $(event.target);
+    let index = this.taskViews.indexOf(this.currentView);
+
+    if(!target.hasClass("next") && !target.hasClass("prev")){
+      throw "problem with nav class"
+    }
+
+    target.hasClass("prev") && (className = {prev: true});
+    target.hasClass("next") && (className = {next: true});
+
+    this.trigger("method::_taskNavHandler", {
+      index: index,
+      className: className
+    });
+  },
+
+  /*API START*/
 
   getTestData: function(){
     let initTestData = testService.getTest();
@@ -54,7 +86,27 @@ export let TestView = Backbone.View.extend({
     this.currentView = this.taskViews[0];
   },
 
-  _checkSolution: function(){
+  updateTimer: function() {
+    let timer = this.model.get("timer");
+    this.$(".timer").html(timer.remainingMinutes + ":" + timer.remainingSeconds);
+
+    if (timer.testEnded) {
+      this.trigger("showResults");
+    }
+  },
+
+  render: function() {
+    var self = this;
+    this.$el.html(template({}));
+    _.each(this.taskViews, function(taskView){
+      self.$(".tasks").append(taskView.render().$el);
+    });
+    return this;
+  },
+
+  /*Controller*/
+
+  _checkSolutionHandler: function(){
     let model = this.currentView.model;
     console.log(model);
     let result = testService.checkTaskSolution(model.toJSON());
@@ -62,16 +114,13 @@ export let TestView = Backbone.View.extend({
     this.model.trigger("change", this.model);
   },
 
-  _showResults: function(){
-    this.trigger("showResults");
+  _showResultsHandler: function(){
+    this.trigger("showResultsPage");
   },
 
-  _taskNavHandler: function(event){
-    var target = $(event.target);
-    let index = this.taskViews.indexOf(this.currentView);
-
-    target.hasClass("prev") && this._showPrevTask(index);
-    target.hasClass("next") && this._showNextTask(index);
+  _taskNavHandler: function(data){
+    data.className.prev && this._showPrevTask(data.index);
+    data.className.next && this._showNextTask(data.index);
   },
 
   _showPrevTask: function(index){
@@ -80,7 +129,6 @@ export let TestView = Backbone.View.extend({
     this.taskViews[index-1].show();
     this.taskViews[index].hide();
     this.currentView = this.taskViews[index-1];
-
   },
 
   _showNextTask: function(index){
@@ -90,24 +138,6 @@ export let TestView = Backbone.View.extend({
     this.taskViews[index].hide();
 
     this.currentView = this.taskViews[index+1];
-  },
-
-  _updateTimer: function(){
-    let timer = this.model.get("timer");
-    this.$(".timer").html(timer.remainingMinutes + ":" +timer.remainingSeconds);
-
-    if(timer.testEnded){
-      this._showResults();
-    }
-  },
-
-  render: function() {
-    var self = this;
-    this.$el.html(template({}));
-    _.each(this.taskViews, function(taskView){
-      self.$(".tasks").append(taskView.prepareData().render().$el);
-    });
-    return this;
   }
 }).extend(displayMixin);
 
