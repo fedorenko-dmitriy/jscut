@@ -66,26 +66,20 @@ export let TaskView = Backbone.View.extend({
 
   /*Controller*/
 
-
-
   _setSolutionToTheModel: function(value){
-    this.model.set("taskSolution",[value],{silent:true})
+    this.model.set("taskSolution",[value], {silent:true})
   },
 
   _setMultiSolutionToTheModel: function(value){
     let taskSolution = this.model.get("taskSolution");
-
+debugger;
     if(_.indexOf(taskSolution, value)>-1){
       taskSolution = _.without(taskSolution, value)
     }else{
       taskSolution.push(value)
     }
 
-    this.model.set("taskSolution",taskSolution,{silent:true})
+    this.model.set("taskSolution",taskSolution, {silent:true})
   }
-
-
-
-
 }).extend(displayMixin);
 

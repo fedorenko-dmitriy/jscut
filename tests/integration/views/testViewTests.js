@@ -17,6 +17,25 @@ describe('Test View Tests', function () {
     testView.$el.remove();
   });
 
+
+  xit("should trigger event 'checkSolution' when button clicked", ()=>{
+    taskView.prepareData().render();
+    sinon.spy(taskView,"trigger");
+
+    taskView.$("button").click();
+
+    expect(taskView.trigger.calledWith("checkSolution")).to.equal(true);
+  });
+
+  xit("should send model.attributes when event 'checkSolution' triggered", ()=>{
+    taskView.prepareData().render();
+    sinon.spy(taskView,"trigger");
+
+    taskView.$("button").click();
+
+    expect(taskView.trigger.calledWith("checkSolution", taskModel)).to.equal(true);
+  });
+
   it("should get data when method 'getTestData' is called", ()=>{
     sinon.stub(testView, "setInitData");
     testView.getTestData();
