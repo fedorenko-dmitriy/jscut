@@ -12,7 +12,7 @@ export let ResultPageView = Backbone.View.extend({
   className: "resultPageView",
 
   initialize: function (options) {
-    this.model = options.model;
+    this._modelInitialize(options.model);
     this._initEvents();
   },
 
@@ -30,6 +30,14 @@ export let ResultPageView = Backbone.View.extend({
 
   _modelChanged: function() {
     this.render();
+  },
+
+  _modelInitialize: function(model){
+    if(model){
+      this.model = model;
+    }else{
+      throw "model should be set in initialize"
+    }
   },
 
   render: function render() {

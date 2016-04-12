@@ -1,6 +1,3 @@
-/**
- * Created by user on 23.03.16.
- */
 module.exports = function(grunt) {
 
   grunt.initConfig({
@@ -9,10 +6,25 @@ module.exports = function(grunt) {
         browserifyOptions: {
           debug: true
         },
-        transform: ['babelify']
+        transform: ['babelify'],
+        alias: alias.map(grunt, [
+          {
+            cwd: "app/views",
+            src: ["**/*.js"],
+            dest: "./views"
+          },
+          {
+            cwd: "app/models",
+            src: ["**/*.js"],
+            dest: "./models"
+          }
+        ])
       },
       app: {
-        src: ['app/*.js', 'app/**/*.js'],
+        src: [
+          'app/*.js',
+          'app/**/*.js'
+        ],
         dest: 'static/app.js'
       }
     },
@@ -51,15 +63,18 @@ module.exports = function(grunt) {
     },
 
     karma: {
-      options: {
-        // Configuration options that tell Karma how to run
-        configFile: 'karma.conf.js'
-        //files: [ 'test/*.js', 'test/**/*.js' ]
+      unit: {
+        configFile: 'karma_unit.conf.js'
+      },
+
+      integration: {
+        configFile: 'karma_integration.conf.js'
       },
 
       dev: {
         // On our local environment we want to test all the things!
         browsers: ['Chrome']//'Firefox', 'PhantomJS'
+         //browsers: ['PhantomJS']//'Firefox', 'PhantomJS'
       }
     },
 
@@ -102,7 +117,24 @@ module.exports = function(grunt) {
 
 
 
-  grunt.registerTask('karma_', ['karma']);
-
-
+  grunt.registerTask('karma-unit', ['karma']);
 };
+
+var alias = {};
+
+alias.map = function aliasMappingsToAliasArray(grunt, aliasMappings)
+{
+  var aliasArray = [],
+    aliases = Array.isArray(aliasMappings) ? aliasMappings : [aliasMappings];
+
+  aliases.forEach(function (alias) {
+
+    grunt.file.expandMapping(alias.src, alias.dest, {cwd: alias.cwd}).forEach(function(file) {
+
+      var expose = file.dest.substr(0, file.dest.lastIndexOf("."));
+      aliasArray.push("./" + file.src[0] + ":" + expose);
+    });
+  });
+
+  return aliasArray;
+}

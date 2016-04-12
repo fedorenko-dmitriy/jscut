@@ -1,10 +1,12 @@
-
-
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha-debug', 'mocha', 'browserify', 'sinon-chai'],
-
-    files: [ 'tests/*.js', 'tests/**/*.js' ],
+    files: [
+      //'./app/*.js',
+      //'./app/**/*.js',
+      './tests/unit/*.js',
+      './tests/unit/**/*.js'
+    ],
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -17,13 +19,15 @@ module.exports = function(config) {
     port: 9877,
 
     preprocessors: {
-      "tests/*.js": ["browserify"],
-      "tests/**/*.js": ["browserify"]
+      //'./app/*.js' : ["browserify"],
+      //'./app/**/*.js' : ["browserify"],
+      './tests/unit/*.js' : ["browserify"],
+      './tests/unit/**/*.js' : ["browserify"]
     },
 
     browserify: {
       debug: true,
-      transform: [ 'babelify' ]
+      transform: ['babelify']
     },
 
     // enable / disable colors in the output (reporters and logs)
