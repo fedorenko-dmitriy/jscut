@@ -41,4 +41,9 @@ describe('ResultPage View Tests', function () {
     resultPageView.render();
     expect(resultPageView.$el.html.called).to.equal(true);
   });
+
+  it("should call method html in view.$el when method 'render' is called", ()=>{
+    let result = resultPageView.render();
+    expect(result).to.equal(resultPageView);
+  });
 });
