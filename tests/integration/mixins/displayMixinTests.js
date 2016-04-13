@@ -1,28 +1,39 @@
 "use strict";
-
-let displayMixin = require('/displayMixin');
+let Backbone = require('backbone');
+let displayMixin = require('../../../app/mixins/displayMixin.js');
 
 describe("Display Mixin tests", ()=>{
-  it("should return false if 'resultPageView' hide state when method 'isShow' is called", ()=>{
-    resultPageView.$el.hide();
-    expect(resultPageView.isShow()).to.equal(false);
+  let someView;
+  beforeEach(()=>{
+    someView = new (Backbone.View.extend(displayMixin))();
+    document.body.appendChild(someView.el);
   });
 
-  it("should return true if 'resultPageView' show state when method 'isShow' is called", ()=>{
-    resultPageView.$el.show();
-    expect(resultPageView.isShow()).to.equal(true);
+  afterEach(()=>{
+    someView.$el.remove();
+  });
+
+  it("should return false if 'someView' hide state when method 'isShow' is called", ()=>{
+    someView.$el.hide();
+    expect(someView.isShow()).to.equal(false);
+  });
+
+  it("should return true if 'someView' show state when method 'isShow' is called", ()=>{
+    someView.$el.show();
+    expect(someView.isShow()).to.equal(true);
   });
 
   it("should add display attribute as 'block' method 'isShow' is called", ()=>{
-    resultPageView.$el.hide();
-    resultPageView.show();
+    someView.$el.hide();
+    someView.show();
 
-    expect(resultPageView.isShow()).to.equal(true);
+    expect(someView.isShow()).to.equal(true);
   });
 
-  it("should remove display attribute as 'block' method 'isShow' is called", ()=>{
-    resultPageView.$el.show();
-    resultPageView.hide();
+  it("should remove display attribute as 'block' method 'isShow' is called", ()=> {
+    someView.$el.show();
+    someView.hide();
 
-    expect(resultPageView.isShow()).to.equal(false);
-})
+    expect(someView.isShow()).to.equal(false);
+  });
+});
