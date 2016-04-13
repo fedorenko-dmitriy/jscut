@@ -17,6 +17,7 @@ export let TestView = Backbone.View.extend({
 
   initialize: function(options) {
     options = options||{};
+    this.testService = options.testService ? options.testService : testService; // ToDo Hack: this string create only for testing
     this.model = options.model;
     this._initEvents();
     this.taskViews = [];
@@ -33,8 +34,8 @@ export let TestView = Backbone.View.extend({
     this.listenTo(this.model,"time", this.updateTimer);
 
     this.on("method::_checkSolutionHandler", this._checkSolutionHandler);
-    this.on("method::_showResultsHandler", this._showResultsHandler);
     this.on("method::_taskNavHandler", this._taskNavHandler);
+    this.on("method::_showResultsHandler", this._showResultsHandler);
   },
 
   _clickBtnCheckSolution: function(){
@@ -46,7 +47,7 @@ export let TestView = Backbone.View.extend({
   },
 
   _clickBtnTaskNav: function(event){
-    let className;
+    let direction;
     let target = $(event.target);
     let index = this.taskViews.indexOf(this.currentView);
 
@@ -54,22 +55,26 @@ export let TestView = Backbone.View.extend({
       throw "problem with nav class"
     }
 
-    target.hasClass("prev") && (className = {prev: true});
-    target.hasClass("next") && (className = {next: true});
+    target.hasClass("prev") && (direction = {prev: true});
+    target.hasClass("next") && (direction = {next: true});
 
     this.trigger("method::_taskNavHandler", {
       index: index,
-      className: className
+      direction: direction
     });
   },
 
   /*API START*/
 
   getTestData: function(){
-    let initTestData = testService.getTest();
-    if(initTestData){
+    let initTestData = this.testService.getTest();
+    if(initTestData && initTestData.tasks.length>0){
       this.setInitData(initTestData);
+    } else{
+      throw "App doesn't receive testData";
     }
+
+    return this;
   },
 
   setInitData: function(initTestData){
@@ -78,12 +83,31 @@ export let TestView = Backbone.View.extend({
 
     let tasks = this.model.get("tasks");
 
-    tasks.each(function(model){
-      let taskView = taskViewFactory.create(model);
-      self.taskViews.push(taskView);
-    });
+    if(tasks.length>0){
+      tasks.each(function(model){
+        let taskView = taskViewFactory.create(model);
+        self.taskViews.push(taskView);
+      });
 
-    this.currentView = this.taskViews[0];
+      this.setCurrentView(0);
+    }
+
+
+    return this;
+  },
+
+  setCurrentView: function(index){
+    if(_.isNumber(index) && this.taskViews[index]) {
+      this.currentView = this.taskViews[index];
+      this.taskViews.forEach(function(elem){
+        elem.hide();
+      });
+      this.currentView.show();
+    }else{
+      throw 'index not specify or view with this index undefined';
+    }
+
+    return this;
   },
 
   updateTimer: function() {
@@ -93,6 +117,8 @@ export let TestView = Backbone.View.extend({
     if (timer.testEnded) {
       this.trigger("showResults");
     }
+
+    return this;
   },
 
   render: function() {
@@ -108,8 +134,7 @@ export let TestView = Backbone.View.extend({
 
   _checkSolutionHandler: function(){
     let model = this.currentView.model;
-    console.log(model);
-    let result = testService.checkTaskSolution(model.toJSON());
+    let result = this.testService.checkTaskSolution(model.toJSON());
     model.set(result);
     this.model.trigger("change", this.model);
   },
@@ -119,8 +144,8 @@ export let TestView = Backbone.View.extend({
   },
 
   _taskNavHandler: function(data){
-    data.className.prev && this._showPrevTask(data.index);
-    data.className.next && this._showNextTask(data.index);
+    data.direction.prev && this._showPrevTask(data.index);
+    data.direction.next && this._showNextTask(data.index);
   },
 
   _showPrevTask: function(index){

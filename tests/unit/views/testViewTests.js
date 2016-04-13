@@ -1,135 +1,200 @@
 "use strict";
+let _ = require("underscore");
 let Backbone = require('backbone');
+var helpers = require("../../../app/util/hbs-helpers");
 
-import {TestView} from '../../app/views/TestView.js';
+helpers.init();
+
+import { TestView } from '../../../app/views/TestView';
+import { AppModel } from '../../../app/models/AppModel';
+import { timeService } from '../../../app/services/timeService';
+
 
 describe('Test View Tests', function () {
   let testView,
-    testModel;
+      testModel,
+      sandbox;
 
   beforeEach(()=>{
-    testModel = new Backbone.Model();
+    testModel = new AppModel({timeService: timeService});
     testView = new TestView({model: testModel});
-    document.body.appendChild(testView.el);
+    sandbox = sinon.sandbox.create();
   });
 
   afterEach(()=>{
-    testView.$el.remove();
+    delete testView.testService;
+    sandbox.restore();
   });
 
-
-  xit("should trigger event 'checkSolution' when button clicked", ()=>{
-    taskView.prepareData().render();
-    sinon.spy(taskView,"trigger");
-
-    taskView.$("button").click();
-
-    expect(taskView.trigger.calledWith("checkSolution")).to.equal(true);
-  });
-
-  xit("should send model.attributes when event 'checkSolution' triggered", ()=>{
-    taskView.prepareData().render();
-    sinon.spy(taskView,"trigger");
-
-    taskView.$("button").click();
-
-    expect(taskView.trigger.calledWith("checkSolution", taskModel)).to.equal(true);
-  });
-
-  it("should get data when method 'getTestData' is called", ()=>{
-    sinon.stub(testView, "setInitData");
-    testView.getTestData();
-
-    expect(testView.setInitData.called).to.equal(true);
-  });
-
-  it("should append sub views into testView.taskViews when method 'getTestData' is called", ()=>{
-    testView.getTestData();
-    expect(testView.taskViews).to.have.length.above(1);
-  });
-
-  it("should append sub views into taskView.$el when method 'getTestData' is called", ()=>{
-    testView.getTestData();
-    expect(testView.$el.children()).to.have.length.above(1);
-  });
-
-  it("should render time when model is triggered 'time' event", ()=>{
-    sinon.stub(testView, "trigger");
-    testView.render();
-    testModel.set("timer", {
-      remainingMinutes: "00",
-      remainingSeconds: "00"
-    });
-    testModel.trigger("time");
-
-    expect(testView.$(".timer").text()).to.eql("00:00");
-  });
-
-  it("should trigger event 'showResults' when model attribute timer.testEnded is true", ()=>{
-    sinon.stub(testView, "trigger");
-    testModel.set("timer", {testEnded: true});
-    testModel.trigger("time");
-
-    expect(testView.trigger.calledWith("showResults"));
-  });
-
-  describe("navigation behaviour", ()=>{
-    it("should change view to next when button 'prev' is pressed", ()=>{
-      let startView;
-      let currentView;
-      testView.render();
+  describe("method getTestData", ()=>{
+    it("should call setInitData if testData received from server when method 'getTestData' is called", ()=>{
+      sandbox.stub(TestView.prototype, "setInitData");
+      let testService = {getTest : function(){return {tasks:[1]};}};
+      let testView = new TestView({
+        model: testModel,
+        testService :testService
+      });
       testView.getTestData();
-      testView.taskViews.forEach(function(elem){
-        elem.hide();
+
+      expect(testView.setInitData.called).to.equal(true);
+    });
+
+    it("should throw exception if testData didn't receive from server when method 'getTestData' is called", ()=>{
+      sandbox.stub(TestView.prototype, "setInitData");
+      let testService = {getTest : function(){return false;}};
+      let testView = new TestView({
+        model: testModel,
+        testService :testService
       });
 
-      testView.taskViews[1].show();
-      testView.$("button.prev").click();
-      expect(testView.taskViews[1].isShow()).to.equal(false);
-      expect(testView.taskViews[0].isShow()).to.equal(true);
-
-    });
-
-    it("should change view to next when button 'next' is pressed", ()=>{
-      let startView;
-      let currentView;
-      testView.render();
-      testView.getTestData();
-      testView.taskViews.forEach(function(elem){
-        elem.hide();
-      });
-
-      testView.taskViews[0].show();
-      testView.$("button.next").click();
-      expect(testView.taskViews[0].isShow()).to.equal(false);
-      expect(testView.taskViews[1].isShow()).to.equal(true);
-
+      expect(testView.getTestData).to.throw();
     });
   });
 
-  describe("visibility", function(){
-    it("should return false if 'testView' hide state when method 'isShow' is called", ()=>{
-      testView.$el.hide();
-      expect(testView.isShow()).to.equal(false);
+  describe("method setInitData", ()=>{
+    it("should append sub views into testView.taskViews when method 'getTestData' is called", ()=>{
+      testView.setInitData({tasks:[{task:1}]});
+      expect(testView.model.get("tasks")).to.have.lengthOf(1);
     });
 
-    it("should return true if 'testView' show state when method 'isShow' is called", ()=>{
-      testView.$el.show();
-      expect(testView.isShow()).to.equal(true);
+    it("should call method 'setCurrentView' when method 'setInitData' is called", ()=>{
+      let stub = sandbox.stub(TestView.prototype, "setCurrentView");
+      testView.setInitData({tasks:[{some:"data"}]});
+      expect(stub.called).to.equal(true);
     });
 
-    it("should add display attribute as 'block' method 'isShow' is called", ()=>{
-      testView.$el.hide();
-      testView.show();
-
-      expect(testView.isShow()).to.equal(true);
+    it("should set first view in taskView array as currentView when method 'setInitData' is called", ()=>{
+      testView.setInitData({tasks:[{task:1}]});
+      expect(testView.currentView).to.equal(testView.taskViews[0]);
     });
 
-    it("should remove display attribute as 'block' method 'isShow' is called", ()=>{
-      testView.$el.show();
-      testView.hide();
+    it("shouldn't call method 'setCurrentView' when length of collection tasks <=0'", ()=>{
+      let stub = sandbox.stub(TestView.prototype, "setCurrentView");
+      testView.setInitData({tasks:[]});
+      expect(stub.called).to.equal(false);
+    });
+  });
 
-      expect(testView.isShow()).to.equal(false);
+  describe("method setCurrentView", function(){
+    it("should set current view of task view " +
+      "when method setCurrentView called with index position of selected view", ()=>{
+      testView.setInitData({tasks:[{task:1}, {task:1}]});
+      testView.setCurrentView(1);
+      expect(testView.currentView).to.equal(testView.taskViews[1]);
+    });
+
+    it("should throw exception " +
+      "when method setCurrentView called with wrong index position of selected view", ()=>{
+      let spy = sandbox.spy(TestView.prototype, "setCurrentView");
+      spy.args[0]=5;
+      testView.setInitData({tasks:[{task:1}, {task:1}]});
+
+      expect(spy).to.throw();
+    });
+
+    it("should throw exception " +
+      "when method setCurrentView called without index position of selected view", ()=>{
+      let spy = sandbox.spy(TestView.prototype, "setCurrentView");
+      testView.setInitData({tasks:[{task:1}, {task:1}]});
+
+      expect(spy).to.throw();
+    });
+
+    it("should throw exception " +
+      "when method setCurrentView called with argument which is not number", ()=>{
+      let spy = sandbox.spy(TestView.prototype, "setCurrentView");
+      spy.args[0]="five";
+      testView.setInitData({tasks:[{task:1}, {task:1}]});
+
+      expect(spy).to.throw();
+    });
+  });
+
+  describe("Application Event 'method::_checkSolutionHandler'", ()=>{
+    it("should set solution check result in model of currentView " +
+      "when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      testView.getTestData();
+      let stub = sandbox.stub(testView.currentView.model, "set");
+      testView.trigger('method::_checkSolutionHandler');
+
+      expect(stub.called).to.equal(true);
+    });
+
+    it("should trigger model event 'change' when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      testView.getTestData();
+      let stub = sandbox.stub(testView.model, "trigger");
+      testView.trigger('method::_checkSolutionHandler');
+
+      expect(stub.calledWith("change")).to.equal(true);
+    });
+  });
+
+  describe("Application Event 'method::_taskNavHandler'", ()=>{
+    it("should change current view to next view in taskView array " +
+      "when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      testView.getTestData();
+      let index = 0;
+      testView.currentView = testView.taskViews[index];
+
+      testView.trigger("method::_taskNavHandler", {
+        index: index,
+        direction: {next:true}
+      });
+
+      expect(testView.currentView).to.equals(testView.taskViews[index+1]);
+    });
+
+    it("shouldn't change current view to next view if it last view in taskView array " +
+      "when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      testView.getTestData();
+
+      let index = testView.taskViews.length-1;
+      testView.currentView = testView.taskViews[index];
+
+      testView.trigger("method::_taskNavHandler", {
+        index: index,
+        direction: {next:true}
+      });
+
+      expect(testView.currentView).to.equals(testView.taskViews[index]);
+    });
+
+    it("should change current view to previous view in taskView array " +
+      "when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      testView.getTestData();
+      let index = testView.taskViews.length-1;
+      testView.currentView = testView.taskViews[index];
+
+      testView.trigger("method::_taskNavHandler", {
+        index: index,
+        direction: {prev:true}
+      });
+
+      expect(testView.currentView).to.equals(testView.taskViews[index-1]);
+    });
+
+    it("shouldn't change current view to previous if it first view in taskView array " +
+      "when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      testView.getTestData();
+      let index = 0;
+      testView.currentView = testView.taskViews[index];
+
+      testView.trigger("method::_taskNavHandler", {
+        index: index,
+        direction: {prev:true}
+      });
+
+      expect(testView.currentView).to.equals(testView.taskViews[index]);
+    });
+  });
+
+  describe("Application Event 'method::_showResultsHandler'", ()=>{
+    it("should trigger event 'showResultsPage'  when event 'method::_showResultsHandler' is triggered", ()=>{
+      testView.getTestData();
+      let spy = sandbox.spy(testView, "trigger");
+      testView.trigger('method::_showResultsHandler');
+
+      expect(spy.secondCall.calledWith("showResultsPage")).to.equal(true);
     });
   });
 });
