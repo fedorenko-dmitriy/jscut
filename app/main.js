@@ -1,7 +1,9 @@
 "use strict";
-var $ = require('jquery-untouched');
-var Backbone = require('backbone');
-var helpers = require("./util/hbs-helpers");
+let $ = require('jquery-untouched');
+let Backbone = require('backbone');
+let helpers = require("./util/hbs-helpers");
+
+let template = require("./templates/baseLayout/buttons.hbs");
 
 helpers.init();
 
@@ -24,14 +26,38 @@ let MainView = Backbone.View.extend({
     this._initEvents();
   },
 
+  events: {
+    "click .showStartPage": "_onClickShowStartPage",
+    "click .showTestPage": "_onClickShowTestPage",
+    "click .showResultPage": "_onClickShowResultPage"
+  },
+
+  _onClickShowStartPage: function(){
+    this.trigger("method::_showStartPage");
+  },
+
+  _onClickShowTestPage: function(){
+    this.trigger("method::_showTestPage");
+  },
+
+  _onClickShowResultPage: function(){
+    this.trigger("method::_showResultPage");
+  },
+
   _initEvents: function(){
     this.listenTo(testView, "showResultsPage",this._showResultPage);
     this.listenTo(resultPageView, "showTest",this._showTestPage);
+
+    this.on("method::_showStartPage", this._showStartPage);
+    this.on("method::_showTestPage", this._showTestPage);
+    this.on("method::_showResultPage", this._showResultPage);
   },
 
-  _showResultPage: function(){
+  _showStartPage: function(){
+    console.log("not implement");
+    //ToDo to implement
     testView.hide();
-    resultPageView.show();
+    resultPageView.hide();
   },
 
   _showTestPage: function(){
@@ -39,9 +65,16 @@ let MainView = Backbone.View.extend({
     resultPageView.hide();
   },
 
+  _showResultPage: function(){
+    testView.hide();
+    resultPageView.show();
+  },
+
   render: function(){
-    $('body').append(testView.render().$el);
-    $('body').append(resultPageView.render().$el);
+    this.$el.html(template({}));
+    $('.container').append(this.$el)
+                   .append(testView.render().$el)
+                   .append(resultPageView.render().$el);
     this._showTestPage();
     return this;
   }
