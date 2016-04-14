@@ -40,18 +40,9 @@ describe('Test View Tests', function () {
       testView.getTestData().render();
       sinon.spy(testView,"trigger");
 
-      testView.$("button.checkSolution").click();
+      testView.$("button.taskNav").click();
 
-      expect(testView.trigger.calledWith("method::_checkSolutionHandler")).to.equal(true);
-    });
-
-    it("should trigger event 'method::_showResultsHandler' when button.showResults is clicked", ()=>{
-      testView.getTestData().render();
-      sinon.spy(testView,"trigger");
-
-      testView.$("button.checkSolution").click();
-
-      expect(testView.trigger.calledWith("method::_checkSolutionHandler")).to.equal(true);
+      expect(testView.trigger.calledWith("method::_taskNavHandler")).to.equal(true);
     });
   });
 
@@ -95,20 +86,53 @@ describe('Test View Tests', function () {
 
       testView.setCurrentView(1);
 
-      testView.$("button.prev").click();
-      expect(testView.taskViews[1].isShow()).to.equal(false);
-      expect(testView.taskViews[0].isShow()).to.equal(true);
+      testView.$(".topTaskNav button.first").click();
+
+      let result = _isTaskViewHideExceptPassedView(testView.taskViews[0]);
+      expect(result).to.equal(true);
+    });
+
+    it("should change view to next when button 'prev' is pressed", ()=>{
+      testView.getTestData().render();
+
+      testView.setCurrentView(1);
+
+      testView.$(".topTaskNav button.prev").click();
+
+      let result = _isTaskViewHideExceptPassedView(testView.taskViews[0]);
+      expect(result).to.equal(true);
     });
 
     it("should change view to next when button 'next' is pressed", ()=>{
       testView.getTestData().render();
-
       testView.setCurrentView(0);
 
-      testView.$("button.next").click();
-      expect(testView.taskViews[1].isShow()).to.equal(true);
-      expect(testView.taskViews[0].isShow()).to.equal(false);
+      testView.$(".topTaskNav button.next").click();
+
+      let result = _isTaskViewHideExceptPassedView(testView.taskViews[1]);
+      expect(result).to.equal(true);
     });
+
+    it("should change view to last when button 'last' is pressed", ()=>{
+      testView.getTestData().render();
+      testView.setCurrentView(0);
+
+      testView.$(".topTaskNav button.last").click();
+
+      let index = testView.taskViews.length-1;
+      let result = _isTaskViewHideExceptPassedView(testView.taskViews[index]);
+      expect(result).to.equal(true);
+    });
+
+    function _isTaskViewHideExceptPassedView(view){
+      let result = true;
+      testView.taskViews.forEach(function(taskView){
+        if(taskView !== view && taskView.isShow()){
+          result = false;
+        }
+      });
+      return result
+    }
   });
 
   describe("check display init initialize", ()=>{

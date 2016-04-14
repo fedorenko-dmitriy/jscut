@@ -17,7 +17,7 @@ export let ResultPageView = Backbone.View.extend({
   },
 
   events: {
-    "click button": "_showTest"
+
   },
 
   _initEvents: function() {

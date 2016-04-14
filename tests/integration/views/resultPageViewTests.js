@@ -17,14 +17,6 @@ describe('ResultPage View Tests', function () {
     resultPageView.$el.remove();
   });
 
-  it("should trigger event 'showTest' when button is clicked", ()=>{
-    sinon.stub(resultPageView, "trigger");
-    resultPageView.render();
-    resultPageView.$("button").click();
-
-    expect(resultPageView.trigger.calledWith("showTest")).to.equal(true);
-  });
-
   describe("check display init initialize", ()=>{
     it("should has method 'isShow'", ()=>{
       expect(resultPageView.isShow).to.be.an('function');

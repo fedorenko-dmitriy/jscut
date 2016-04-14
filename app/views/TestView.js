@@ -26,8 +26,7 @@ export let TestView = Backbone.View.extend({
 
   events: {
     "click button.checkSolution": "_clickBtnCheckSolution",
-    "click button.taskNav" :  "_clickBtnTaskNav",
-    "click button.showResults" : "_clickBtnShowResults"
+    "click button.taskNav" :  "_clickBtnTaskNav"
   },
 
   _initEvents: function(){
@@ -49,19 +48,17 @@ export let TestView = Backbone.View.extend({
   _clickBtnTaskNav: function(event){
     let direction;
     let target = $(event.target);
-    let index = this.taskViews.indexOf(this.currentView);
 
-    if(!target.hasClass("next") && !target.hasClass("prev")){
+    if(!target.hasClass("first") && !target.hasClass("prev") && !target.hasClass("next") && !target.hasClass("last")){
       throw "problem with nav class"
     }
 
+    target.hasClass("first") && (direction = {first: true});
     target.hasClass("prev") && (direction = {prev: true});
     target.hasClass("next") && (direction = {next: true});
+    target.hasClass("last") && (direction = {last: true});
 
-    this.trigger("method::_taskNavHandler", {
-      index: index,
-      direction: direction
-    });
+    this.trigger("method::_taskNavHandler", {direction: direction});
   },
 
   /*API START*/
@@ -91,17 +88,14 @@ export let TestView = Backbone.View.extend({
 
       this.setCurrentView(0);
     }
-
-
     return this;
   },
 
   setCurrentView: function(index){
     if(_.isNumber(index) && this.taskViews[index]) {
+      this._hideAllTasks();
+
       this.currentView = this.taskViews[index];
-      this.taskViews.forEach(function(elem){
-        elem.hide();
-      });
       this.currentView.show();
     }else{
       throw 'index not specify or view with this index undefined';
@@ -144,25 +138,39 @@ export let TestView = Backbone.View.extend({
   },
 
   _taskNavHandler: function(data){
-    data.direction.prev && this._showPrevTask(data.index);
-    data.direction.next && this._showNextTask(data.index);
+    let index = this.taskViews.indexOf(this.currentView);
+
+    data.direction.first && this._showFirstTask();
+    data.direction.prev && this._showPrevTask(index);
+    data.direction.next && this._showNextTask(index);
+    data.direction.last && this._showLastTask();
+  },
+
+  _showFirstTask: function(){
+    let index = 0;
+    this.setCurrentView(index);
   },
 
   _showPrevTask: function(index){
     if(!this.taskViews[index-1]){ return; }
-
-    this.taskViews[index-1].show();
-    this.taskViews[index].hide();
-    this.currentView = this.taskViews[index-1];
+    this.setCurrentView(index-1);
   },
 
   _showNextTask: function(index){
     if(!this.taskViews[index+1]){ return; }
 
-    this.taskViews[index+1].show();
-    this.taskViews[index].hide();
+    this.setCurrentView(index+1);
+  },
 
-    this.currentView = this.taskViews[index+1];
+  _showLastTask: function(){
+    let index = this.taskViews.length-1;
+    this.setCurrentView(index);
+  },
+
+  _hideAllTasks: function(){
+    this.taskViews.forEach(function(taskView){
+      taskView.hide();
+    });
   }
 }).extend(displayMixin);
 
