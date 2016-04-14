@@ -6,47 +6,40 @@
 
 <div class="row descriptionBlock">
     <div class="col-md-3 title">Task description</div>
-    <div class="col-md-9 text">{{taskDescription}}</div>
+    <div class="col-md-9 description">{{taskDescription}}</div>
 </div>
 <hr/>
 <div class="row answerBlock {{taskType}}">
-  {{#ifvalue taskType value="string"}}
-      <div class="col-md-3 title">Answer</div>
-      <div class="col-md-9 text">
-          <textarea class="col-md-12"  rows="10">{{taskSolvetion}}</textarea>
-      </div>
-  {{/ifvalue}}
-
-  {{#ifvalue taskType value="evaluate"}}
-      <div class="col-md-3 title">Answer</div>
-      <div class="col-md-9 text">
-          <textarea class="col-md-12" rows="10">{{taskSolvetion}}</textarea>
-      </div>
-  {{/ifvalue}}
-
-  {{#ifvalue taskType value="select"}}
-    <div class="col-md-3 title">Answer</div>
-    <div class="col-md-9 text">
-      {{#each variantsOfSolutions}}
-        <div>
-            <input type="radio" name="select" value="{{@index}}"/> <label for="">{{this}}</label>
-        </div>
-      {{/each}}
+    <div class="col-md-3 title">
+        <div>Answer</div>
+        <span class="success notification">is correct! Go to next one.</span>
+        <span class="error notification">is wrong! Try again.</span>
     </div>
-  {{/ifvalue}}
+    <div class="col-md-9 answers">
+      {{#ifvalue taskType value="string"}}
+        <textarea class="col-md-12 form-control"  rows="10">{{taskSolvetion}}</textarea>
+      {{/ifvalue}}
 
-  {{#ifvalue taskType value="multiSelect"}}
-    <div class="col-md-3 title">Answer</div>
-    <div class="col-md-9 text">
-      {{#each variantsOfSolutions}}
-        <div>
-            <input type="checkbox" name="multiSelect" value="{{@index}}"/>  <label for="">{{this}}</label>
-        </div>
-      {{/each}}
+      {{#ifvalue taskType value="evaluate"}}
+        <textarea class="col-md-12 form-control" rows="10">{{taskSolvetion}}</textarea>
+      {{/ifvalue}}
+
+      {{#ifvalue taskType value="select"}}
+        {{#each variantsOfSolutions}}
+          <div class="item">
+              <input type="radio" name="select" value="{{@index}}"/> <label for="">{{this}}</label>
+          </div>
+        {{/each}}
+      {{/ifvalue}}
+
+      {{#ifvalue taskType value="multiSelect"}}
+        {{#each variantsOfSolutions}}
+          <div class="item">
+              <input type="checkbox" name="multiSelect" value="{{@index}}"/>  <label for="">{{this}}</label>
+          </div>
+        {{/each}}
+      {{/ifvalue}}
     </div>
-  {{/ifvalue}}
-
 </div>
 
-<div class="success notification"><a href="http://ain.ua/tag/peremoga">#перемога</a></div>
-<div class="error notification"><a href="http://ain.ua/tag/zrada">#зрада</a></div>
+

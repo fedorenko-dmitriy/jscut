@@ -43,10 +43,15 @@ export let TaskView = Backbone.View.extend({
 
   _showNotification: function(){
     this.$(".notification").removeClass("show");
+    this.$(".text").removeClass("has-success")
+                   .removeClass("has-error");
+
     if(this.model.get("isSolved")){
       this.$(".success").addClass("show");
+      this.$(".answers").addClass("has-success");
     } else {
       this.$(".error").addClass("show");
+      this.$(".answers").addClass("has-error");
     }
   },
 
@@ -72,7 +77,6 @@ export let TaskView = Backbone.View.extend({
 
   _setMultiSolutionToTheModel: function(value){
     let taskSolution = this.model.get("taskSolution");
-debugger;
     if(_.indexOf(taskSolution, value)>-1){
       taskSolution = _.without(taskSolution, value)
     }else{

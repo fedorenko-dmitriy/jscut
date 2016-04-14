@@ -5,7 +5,6 @@ body {
 
 .notification{
   display: none;
-  text-align: center;
 }
 
 .notification.show{
@@ -13,11 +12,11 @@ body {
 }
 
 .notification.success{
-  background-color: #009926;
+  color: #009926;
 }
 
 .notification.error{
-  background-color: red;
+  color: red;
 }
 
 .notification>a{
@@ -37,6 +36,16 @@ body {
 .task:first-child{
    display: block;
 }
+
+.answerBlock.select .answers.has-success,
+.answerBlock.multiSelect .answers.has-success{
+  background-color:#D9EAD3;
+}
+.answerBlock.select .answers.has-error,
+.answerBlock.multiSelect .answers.has-error{
+  background-color:#F4CCCC;
+}
+
 
 /*Timer*/
 .timer{
