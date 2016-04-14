@@ -37,3 +37,10 @@ body {
 .task:first-child{
    display: block;
 }
+
+/*Timer*/
+.timer{
+  margin-top: 29px;
+  text-align: right;
+  font-size: 18px;
+}

@@ -56,7 +56,7 @@ describe('Test View Tests', function () {
       });
       testModel.trigger("time");
 
-      expect(testView.$(".timer").text()).to.eql("00:00");
+      expect(testView.$(".timer>.time").text()).to.eql("00:00");
       stub.restore();
     });
 

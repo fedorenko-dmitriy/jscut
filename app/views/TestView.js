@@ -106,7 +106,7 @@ export let TestView = Backbone.View.extend({
 
   updateTimer: function() {
     let timer = this.model.get("timer");
-    this.$(".timer").html(timer.remainingMinutes + ":" + timer.remainingSeconds);
+    this.$(".timer>.time").html(timer.remainingMinutes + ":" + timer.remainingSeconds);
 
     if (timer.testEnded) {
       this.trigger("showResults");
