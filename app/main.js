@@ -1,20 +1,22 @@
 "use strict";
 let $ = require('jquery-untouched');
 let Backbone = require('backbone');
+Backbone.$ = $;
 let helpers = require("./util/hbs-helpers");
 
 let template = require("./templates/baseLayout/buttons.hbs");
 
 helpers.init();
 
-Backbone.$ = $;
-
-import { TestView } from './views/TestView';
-import { AppModel } from './models/AppModel'
-import { ResultPageView } from './views/ResultPageView';
+import { AppModel } from './models/AppModel';
 import { timeService } from './services/timeService.js'
 
+import { TestView } from './views/TestView';
+import { StartPageView } from './views/StartPageView.js'
+import { ResultPageView } from './views/ResultPageView';
+
 let appModel = new AppModel({timeService: timeService}),
+    startPageView = new StartPageView(),
     testView = new TestView({model: appModel}),
     resultPageView = new ResultPageView({model: appModel});
 
@@ -45,6 +47,7 @@ let MainView = Backbone.View.extend({
   },
 
   _initEvents: function(){
+    this.listenTo(startPageView, "startTestSuite", this._startTestSuite);
     this.listenTo(testView, "showResultsPage",this._showResultPage);
     this.listenTo(resultPageView, "showTest",this._showTestPage);
 
@@ -53,19 +56,30 @@ let MainView = Backbone.View.extend({
     this.on("method::_showResultPage", this._showResultPage);
   },
 
+  _startTestSuite: function(){
+    let self = this;
+    //testView.getTestData().done(function() {
+    //  self._showTestPage();
+    //});
+
+    testView.getTestData();
+    this._showTestPage();
+  },
+
   _showStartPage: function(){
-    console.log("not implement");
-    //ToDo to implement
+    startPageView.show();
     testView.hide();
     resultPageView.hide();
   },
 
   _showTestPage: function(){
+    startPageView.hide();
     testView.show();
     resultPageView.hide();
   },
 
   _showResultPage: function(){
+    startPageView.hide();
     testView.hide();
     resultPageView.show();
   },
@@ -73,9 +87,10 @@ let MainView = Backbone.View.extend({
   render: function(){
     this.$el.html(template({}));
     $('.container').append(this.$el)
+                   .append(startPageView.render().$el)
                    .append(testView.render().$el)
                    .append(resultPageView.render().$el);
-    this._showTestPage();
+    this._showStartPage();
     return this;
   }
 });
