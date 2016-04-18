@@ -65,7 +65,11 @@ export let testService = {
 
     for(let i=0; i<task.taskSolution.length; i++){
       if(task.taskType === "evaluate"){
-        result = eval(task.taskSolution[i]);
+        try {
+          result = eval(task.taskSolution[i]);
+        } catch (e) {
+          result = false;
+        }
       }else{
         result = task.taskSolution[i]
       }

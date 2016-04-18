@@ -43,7 +43,7 @@ export let TaskView = Backbone.View.extend({
 
   _showNotification: function(){
     this.$(".notification").removeClass("show");
-    this.$(".text").removeClass("has-success")
+    this.$(".answers").removeClass("has-success")
                    .removeClass("has-error");
 
     if(this.model.get("isSolved")){
