@@ -23,6 +23,23 @@ module.exports = {
       } else {
         return options.inverse(this);
       }
+    })
+
+    Handlebars.registerHelper('score', function (conditional, options) {
+      let score = 0;
+      let type = options.hash.type;
+      conditional.forEach(function(item){
+        if(type === "right" && item.isSolved === 1){
+          score +=1;
+        }
+        else if(type === "wrong" && item.isSolved === 0){
+          score +=1;
+        }
+        else if(type === "any" && item.isSolved === -1){
+          score +=1;
+        }
+      });
+      return score;
     });
   }
 };
