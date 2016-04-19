@@ -11,23 +11,25 @@ describe('Task View Tests', function () {
 
   let taskView,
       taskModel,
-      taskData;
+      taskData,
+      sandbox;
 
   beforeEach(()=>{
     taskModel = new Backbone.Model(taskData);
     taskData = {"some": "data"};
     taskView = new TaskView({model:taskModel});
+    sandbox = sinon.sandbox.create();
     document.body.appendChild(taskView.el);
   });
 
   afterEach(()=>{
+    sandbox.restore();
     taskView.$el.remove();
   });
 
   describe("Dom Events", ()=>{
     beforeEach(()=>{
-      sinon.stub(taskView, "trigger");
-
+      sandbox.stub(taskView, "trigger");
     });
 
     it("should trigger appEvent 'method::_setSolutionToTheModel'" +

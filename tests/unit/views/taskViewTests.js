@@ -10,17 +10,18 @@ describe('Task View Tests', function () {
 
   let taskView,
       taskModel,
-      taskData;
+      taskData,
+      sandbox;
 
   beforeEach(()=>{
     taskModel = new Backbone.Model(taskData);
     taskData = {"some": "data"};
     taskView = new TaskView({model:taskModel});
-    document.body.appendChild(taskView.el);
+    sandbox = sinon.sandbox.create();
   });
 
   afterEach(()=>{
-    taskView.$el.remove();
+    sandbox.restore();
   });
 
   describe("Application Events", ()=>{
@@ -52,7 +53,7 @@ describe('Task View Tests', function () {
 
 
   it("should call method html in view.$el when method 'render' is called", ()=>{
-    sinon.stub(taskView.$el, "html");
+    sandbox.stub(taskView.$el, "html");
     taskView.render();
     expect(taskView.$el.html.called).to.equal(true);
   });
