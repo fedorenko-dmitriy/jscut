@@ -36,7 +36,7 @@ export let AppModel = Backbone.Model.extend({
 
   toJSON: function(){
     let objJSON = Backbone.Model.prototype.toJSON.apply(this);
-    objJSON.tasks = this.get("tasks").toJSON();
+    objJSON.tasks = this.get("tasks") ? this.get("tasks").toJSON() : [];
 
     return objJSON;
   }

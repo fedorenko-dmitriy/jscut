@@ -20,9 +20,6 @@ let appModel = new AppModel({timeService: timeService}),
     testView = new TestView({model: appModel}),
     resultPageView = new ResultPageView({model: appModel});
 
-testView.getTestData();
-
-
 let MainView = Backbone.View.extend({
   initialize: function(){
     this._initEvents();
@@ -58,12 +55,10 @@ let MainView = Backbone.View.extend({
 
   _startTestSuite: function(){
     let self = this;
-    //testView.getTestData().done(function() {
-    //  self._showTestPage();
-    //});
-
-    testView.getTestData();
-    this._showTestPage();
+    testView.getTestData().done(function() {
+      self._appendViews();
+      self._showTestPage();
+    });
   },
 
   _showStartPage: function(){
@@ -84,17 +79,19 @@ let MainView = Backbone.View.extend({
     resultPageView.show();
   },
 
+  _appendViews: function(){
+    $('.container').append(testView.render().$el)
+      .append(resultPageView.render().$el);
+  },
+
   render: function(){
     this.$el.html(template({}));
     $('.container').append(this.$el)
-                   .append(startPageView.render().$el)
-                   .append(testView.render().$el)
-                   .append(resultPageView.render().$el);
+                   .append(startPageView.render().$el);
     this._showStartPage();
     return this;
   }
 });
-
 
 new MainView({appModel: appModel}).render();
 

@@ -64,14 +64,17 @@ export let TestView = Backbone.View.extend({
   /*API START*/
 
   getTestData: function(){
+    let dfd = $.Deferred();
     let initTestData = this.testService.getTest();
     if(initTestData && initTestData.tasks.length>0){
       this.setInitData(initTestData);
+      setTimeout(dfd.resolve, 1000);
     } else{
+      dfd.reject();
       throw "App doesn't receive testData";
     }
 
-    return this;
+    return dfd;
   },
 
   setInitData: function(initTestData){
