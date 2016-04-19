@@ -8,15 +8,17 @@ import { ResultPageView } from "../../../app/views/ResultPageView";
 
 describe('ResultPage View Tests', function () {
 
-  let resultPageView, model;
+  let resultPageView, model, sandbox;
 
   beforeEach(()=> {
-    model = new Backbone.Model();
+    model = new Backbone.Model({tasks: new Backbone.Collection()});
     resultPageView = new ResultPageView({model: model});
+    sandbox = sinon.sandbox.create();
     document.body.appendChild(resultPageView.el);
   });
 
   afterEach(()=> {
+    sandbox.restore();
     resultPageView.$el.remove();
   });
 
@@ -29,7 +31,7 @@ describe('ResultPage View Tests', function () {
 
   describe("Application Events",()=>{
     it("should render when model triggered 'change'", ()=>{
-      sinon.stub(resultPageView, "render");
+      sandbox.stub(resultPageView, "render");
       resultPageView.model.trigger("change");
 
       expect(resultPageView.render.called).to.equal(true);
@@ -37,9 +39,9 @@ describe('ResultPage View Tests', function () {
   });
 
   it("should call method html in view.$el when method 'render' is called", ()=>{
-    sinon.stub(resultPageView.$el, "html");
+    let stub = sandbox.stub(resultPageView.$el, "html");
     resultPageView.render();
-    expect(resultPageView.$el.html.called).to.equal(true);
+    expect(stub.called).to.equal(true);
   });
 
   it("should call method html in view.$el when method 'render' is called", ()=>{

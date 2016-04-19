@@ -23,7 +23,7 @@ module.exports = {
       } else {
         return options.inverse(this);
       }
-    })
+    });
 
     Handlebars.registerHelper('score', function (conditional, options) {
       let score = 0;
