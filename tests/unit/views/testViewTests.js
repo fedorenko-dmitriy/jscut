@@ -131,7 +131,20 @@ describe('Test View Tests', function () {
 
   describe("Application Event 'method::_taskNavHandler'", ()=>{
     it("should change current view to next view in taskView array " +
-      "when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.first'", ()=>{
+      testView.getTestData();
+      let index = 2;
+      testView.currentView = testView.taskViews[index];
+
+      testView.trigger("method::_taskNavHandler", {
+        direction: {first:true}
+      });
+
+      expect(testView.currentView).to.equals(testView.taskViews[0]);
+    });
+
+    it("should change current view to next view in taskView array " +
+      "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.next'", ()=>{
       testView.getTestData();
       let index = 0;
       testView.currentView = testView.taskViews[index];
@@ -145,7 +158,7 @@ describe('Test View Tests', function () {
     });
 
     it("shouldn't change current view to next view if it last view in taskView array " +
-      "when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.next'", ()=>{
       testView.getTestData();
 
       let index = testView.taskViews.length-1;
@@ -160,7 +173,7 @@ describe('Test View Tests', function () {
     });
 
     it("should change current view to previous view in taskView array " +
-      "when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.prev'", ()=>{
       testView.getTestData();
       let index = testView.taskViews.length-1;
       testView.currentView = testView.taskViews[index];
@@ -174,7 +187,7 @@ describe('Test View Tests', function () {
     });
 
     it("shouldn't change current view to previous if it first view in taskView array " +
-      "when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.prev'", ()=>{
       testView.getTestData();
       let index = 0;
       testView.currentView = testView.taskViews[index];
@@ -182,6 +195,19 @@ describe('Test View Tests', function () {
       testView.trigger("method::_taskNavHandler", {
         index: index,
         direction: {prev:true}
+      });
+
+      expect(testView.currentView).to.equals(testView.taskViews[index]);
+    });
+
+    it("shouldn't change current view to last view in taskView array " +
+      "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.last'", ()=>{
+      testView.getTestData();
+      let index = testView.taskViews.length-1;
+      testView.currentView = testView.taskViews[index];
+
+      testView.trigger("method::_taskNavHandler", {
+        direction: {last:true}
       });
 
       expect(testView.currentView).to.equals(testView.taskViews[index]);

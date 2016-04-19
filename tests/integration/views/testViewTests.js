@@ -13,23 +13,26 @@ import { timeService } from '../../../app/services/timeService';
 
 describe('Test View Tests', function () {
   let testView,
-    testModel;
+      sandbox,
+      testModel;
 
   beforeEach(()=>{
     testModel = new AppModel({timeService: timeService});
     testView = new TestView({model: testModel});
+    sandbox = sinon.sandbox.create();
     document.body.appendChild(testView.el);
   });
 
   afterEach(()=>{
     delete testView.testService;
+    sandbox.restore();
     testView.$el.remove();
   });
 
   describe("DOM events", ()=>{
     it("should trigger event 'method::_checkSolutionHandler' when button.checkSolution is clicked", ()=>{
       testView.getTestData().render();
-      sinon.spy(testView,"trigger");
+      sandbox.spy(testView,"trigger");
 
       testView.$("button.checkSolution").click();
 
@@ -38,7 +41,7 @@ describe('Test View Tests', function () {
 
     it("should trigger event 'method::_taskNavHandler' when button.taskNav is clicked", ()=>{
       testView.getTestData().render();
-      sinon.spy(testView,"trigger");
+      sandbox.spy(testView,"trigger");
 
       testView.$("button.taskNav").click();
 
@@ -48,7 +51,7 @@ describe('Test View Tests', function () {
 
   describe("method 'updateTimer'", ()=>{
     it("should render time when model is triggered 'time' event", ()=>{
-      let stub = sinon.stub(testView, "trigger");
+      let stub = sandbox.stub(testView, "trigger");
       testView.render();
       testModel.set("timer", {
         remainingMinutes: "00",
@@ -61,7 +64,7 @@ describe('Test View Tests', function () {
     });
 
     it("should trigger event 'showResults' when model attribute timer.testEnded is true", ()=>{
-      let stub = sinon.stub(testView, "trigger");
+      let stub = sandbox.stub(testView, "trigger");
       testModel.set("timer", {testEnded: true});
       testModel.trigger("time");
 
@@ -81,7 +84,7 @@ describe('Test View Tests', function () {
   });
 
   describe("navigation behaviour", ()=>{
-    it("should change view to next when button 'prev' is pressed", ()=>{
+    it("should change view to first when button 'first' is pressed", ()=>{
       testView.getTestData().render();
 
       testView.setCurrentView(1);
@@ -92,7 +95,7 @@ describe('Test View Tests', function () {
       expect(result).to.equal(true);
     });
 
-    it("should change view to next when button 'prev' is pressed", ()=>{
+    it("should change view to previous when button 'prev' is pressed", ()=>{
       testView.getTestData().render();
 
       testView.setCurrentView(1);
