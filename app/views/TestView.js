@@ -64,15 +64,18 @@ export let TestView = Backbone.View.extend({
   /*API START*/
 
   getTestData: function(){
+    let self = this;
     let dfd = $.Deferred();
-    let initTestData = this.testService.getTest();
-    if(initTestData && initTestData.tasks.length>0){
-      this.setInitData(initTestData);
-      setTimeout(dfd.resolve, 1000);
-    } else{
-      dfd.reject();
-      throw "App doesn't receive testData";
-    }
+
+    this.testService.getTest().done(function(initTestData){
+      if(initTestData && initTestData.tasks.length>0){
+        self.setInitData(initTestData);
+        setTimeout(dfd.resolve, 1000);
+      } else{
+        dfd.reject();
+        throw "App doesn't receive testData";
+      }
+    });
 
     return dfd;
   },
@@ -130,10 +133,12 @@ export let TestView = Backbone.View.extend({
   /*Controller*/
 
   _checkSolutionHandler: function(){
+    let self = this;
     let model = this.currentView.model;
-    let result = this.testService.checkTaskSolution(model.toJSON());
-    model.set(result);
-    this.model.trigger("change", this.model);
+    this.testService.checkTaskSolution(model.toJSON()).done(function(result){
+      model.set(result);
+      self.model.trigger("change", this.model);
+    });
   },
 
   _showResultsHandler: function(){
