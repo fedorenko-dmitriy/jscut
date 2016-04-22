@@ -30,8 +30,10 @@ describe('Test View Tests', function () {
   });
 
   describe("DOM events", ()=>{
-    it("should trigger event 'method::_checkSolutionHandler' when button.checkSolution is clicked", ()=>{
+    beforeEach(()=>{
       testView.getTestData().render();
+    });
+    it("should trigger event 'method::_checkSolutionHandler' when button.checkSolution is clicked", ()=>{
       sandbox.spy(testView,"trigger");
 
       testView.$("button.checkSolution").click();
@@ -40,7 +42,6 @@ describe('Test View Tests', function () {
     });
 
     it("should trigger event 'method::_taskNavHandler' when button.taskNav is clicked", ()=>{
-      testView.getTestData().render();
       sandbox.spy(testView,"trigger");
 
       testView.$("button.taskNav").click();
@@ -84,9 +85,10 @@ describe('Test View Tests', function () {
   });
 
   describe("navigation behaviour", ()=>{
-    it("should change view to first when button 'first' is pressed", ()=>{
+    beforeEach(()=>{
       testView.getTestData().render();
-
+    });
+    it("should change view to first when button 'first' is pressed", ()=>{
       testView.setCurrentView(1);
 
       testView.$(".topTaskNav button.first").click();
@@ -96,8 +98,6 @@ describe('Test View Tests', function () {
     });
 
     it("should change view to previous when button 'prev' is pressed", ()=>{
-      testView.getTestData().render();
-
       testView.setCurrentView(1);
 
       testView.$(".topTaskNav button.prev").click();
@@ -107,7 +107,6 @@ describe('Test View Tests', function () {
     });
 
     it("should change view to next when button 'next' is pressed", ()=>{
-      testView.getTestData().render();
       testView.setCurrentView(0);
 
       testView.$(".topTaskNav button.next").click();
@@ -117,7 +116,6 @@ describe('Test View Tests', function () {
     });
 
     it("should change view to last when button 'last' is pressed", ()=>{
-      testView.getTestData().render();
       testView.setCurrentView(0);
 
       testView.$(".topTaskNav button.last").click();

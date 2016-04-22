@@ -6,19 +6,7 @@ module.exports = function(grunt) {
         browserifyOptions: {
           debug: true
         },
-        transform: ['babelify'],
-        alias: alias.map(grunt, [
-          {
-            cwd: "app/views",
-            src: ["**/*.js"],
-            dest: "./views"
-          },
-          {
-            cwd: "app/models",
-            src: ["**/*.js"],
-            dest: "./models"
-          }
-        ])
+        transform: ['babelify']
       },
       app: {
         src: [
@@ -119,22 +107,3 @@ module.exports = function(grunt) {
 
   grunt.registerTask('karma-unit', ['karma']);
 };
-
-var alias = {};
-
-alias.map = function aliasMappingsToAliasArray(grunt, aliasMappings)
-{
-  var aliasArray = [],
-    aliases = Array.isArray(aliasMappings) ? aliasMappings : [aliasMappings];
-
-  aliases.forEach(function (alias) {
-
-    grunt.file.expandMapping(alias.src, alias.dest, {cwd: alias.cwd}).forEach(function(file) {
-
-      var expose = file.dest.substr(0, file.dest.lastIndexOf("."));
-      aliasArray.push("./" + file.src[0] + ":" + expose);
-    });
-  });
-
-  return aliasArray;
-}
