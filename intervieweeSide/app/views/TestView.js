@@ -73,7 +73,6 @@ export let TestView = Backbone.View.extend({
         setTimeout(dfd.resolve, 1000);
       } else{
         dfd.reject();
-        throw "App doesn't receive testData";
       }
     });
 
@@ -136,6 +135,8 @@ export let TestView = Backbone.View.extend({
     let self = this;
     let model = this.currentView.model;
     this.testService.checkTaskSolution(model.toJSON()).done(function(result){
+      result = JSON.parse(result);
+
       model.set(result);
       self.model.trigger("change", this.model);
     });

@@ -3,6 +3,8 @@ let _ = require("underscore");
 let Backbone = require('backbone');
 var helpers = require("../../../app/util/hbs-helpers");
 
+var mock = require("../mocks/testSuiteData");
+
 helpers.init();
 
 
@@ -31,8 +33,10 @@ describe('Test View Tests', function () {
 
   describe("DOM events", ()=>{
     beforeEach(()=>{
-      testView.getTestData().render();
+      let data = mock.getTestSuitData();
+      testView.setInitData(data).render();
     });
+
     it("should trigger event 'method::_checkSolutionHandler' when button.checkSolution is clicked", ()=>{
       sandbox.spy(testView,"trigger");
 
@@ -86,7 +90,8 @@ describe('Test View Tests', function () {
 
   describe("navigation behaviour", ()=>{
     beforeEach(()=>{
-      testView.getTestData().render();
+      let data = mock.getTestSuitData();
+      testView.setInitData(data).render();
     });
     it("should change view to first when button 'first' is pressed", ()=>{
       testView.setCurrentView(1);
