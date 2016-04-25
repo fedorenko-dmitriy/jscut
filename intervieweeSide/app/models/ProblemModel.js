@@ -6,7 +6,7 @@ let $ = require('jquery-untouched');
 let Backbone = require('backbone');
 Backbone.$ = $;
 
-export let TaskModel = Backbone.Model.extend({
+export let ProblemModel = Backbone.Model.extend({
   initialize: function(){
 
 

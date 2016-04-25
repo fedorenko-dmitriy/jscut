@@ -6,10 +6,10 @@ Backbone.$ = $;
 
 let displayMixin = require('../mixins/displayMixin');
 
-let template = require("../templates/taskView/taskViewTpl.hbs");
+let template = require("../templates/problemView/problemViewTpl.hbs");
 
-export let TaskView = Backbone.View.extend({
-  className: "task",
+export let ProblemView = Backbone.View.extend({
+  className: "problem",
   initialize: function(options) {
     options = options||{};
     this.model = options.model || new Backbone.Model();
@@ -72,18 +72,18 @@ export let TaskView = Backbone.View.extend({
   /*Controller*/
 
   _setSolutionToTheModel: function(value){
-    this.model.set("taskSolution",[value], {silent:true})
+    this.model.set("userSolution",[value], {silent:true})
   },
 
   _setMultiSolutionToTheModel: function(value){
-    let taskSolution = this.model.get("taskSolution");
-    if(_.indexOf(taskSolution, value)>-1){
-      taskSolution = _.without(taskSolution, value)
+    let userSolution = this.model.get("userSolution");
+    if(_.indexOf(userSolution, value)>-1){
+      userSolution = _.without(userSolution, value)
     }else{
-      taskSolution.push(value)
+      userSolution.push(value)
     }
 
-    this.model.set("taskSolution",taskSolution, {silent:true})
+    this.model.set("userSolution", userSolution, {silent:true})
   }
 }).extend(displayMixin);
 

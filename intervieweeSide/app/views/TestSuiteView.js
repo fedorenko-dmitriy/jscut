@@ -7,33 +7,33 @@ Backbone.$ = $;
 
 let displayMixin = require('../mixins/displayMixin');
 
-import { testService } from "../services/testService.js";
-import { taskViewFactory } from './taskViewFactory';
+import { testSuiteService } from "../services/testSuiteService.js";
+import { problemViewFactory } from './problemViewFactory';
 
-let template = require("../templates/testView/testViewTpl.hbs");
+let template = require("../templates/testSuiteView/testSuiteViewTpl.hbs");
 
-export let TestView = Backbone.View.extend({
-  className:"test",
+export let TestSuiteView = Backbone.View.extend({
+  className:"testSuite",
 
   initialize: function(options) {
     options = options||{};
-    this.testService = options.testService ? options.testService : testService; // ToDo Hack: this string create only for testing
+    this.testSuiteService = options.testSuiteService ? options.testSuiteService : testSuiteService; // ToDo Hack: this string create only for testing
     this.model = options.model;
     this._initEvents();
-    this.taskViews = [];
+    this.problemViews = [];
     this.currentView = {};
   },
 
   events: {
     "click button.checkSolution": "_clickBtnCheckSolution",
-    "click button.taskNav" :  "_clickBtnTaskNav"
+    "click button.problemNav" :  "_clickBtnProblemNav"
   },
 
   _initEvents: function(){
     this.listenTo(this.model,"time", this.updateTimer);
 
     this.on("method::_checkSolutionHandler", this._checkSolutionHandler);
-    this.on("method::_taskNavHandler", this._taskNavHandler);
+    this.on("method::_problemNavHandler", this._problemNavHandler);
     this.on("method::_showResultsHandler", this._showResultsHandler);
   },
 
@@ -45,7 +45,7 @@ export let TestView = Backbone.View.extend({
     this.trigger("method::_showResultsHandler");
   },
 
-  _clickBtnTaskNav: function(event){
+  _clickBtnProblemNav: function(event){
     let direction;
     let target = $(event.target);
 
@@ -58,18 +58,19 @@ export let TestView = Backbone.View.extend({
     target.hasClass("next") && (direction = {next: true});
     target.hasClass("last") && (direction = {last: true});
 
-    this.trigger("method::_taskNavHandler", {direction: direction});
+    this.trigger("method::_problemNavHandler", {direction: direction});
   },
 
   /*API START*/
 
-  getTestData: function(){
+  getTestSuiteData: function(){
     let self = this;
     let dfd = $.Deferred();
 
-    this.testService.getTest().done(function(initTestData){
-      if(initTestData && initTestData.tasks.length>0){
-        self.setInitData(initTestData);
+    this.testSuiteService.getTestSuite().done(function(initTestSuiteData){
+      if(_.isString(initTestSuiteData)) initTestSuiteData = JSON.parse(initTestSuiteData); //ToDo should be tested
+      if(initTestSuiteData && initTestSuiteData.problems.length>0){
+        self.setInitData(initTestSuiteData);
         setTimeout(dfd.resolve, 1000);
       } else{
         dfd.reject();
@@ -79,16 +80,16 @@ export let TestView = Backbone.View.extend({
     return dfd;
   },
 
-  setInitData: function(initTestData){
+  setInitData: function(initTestSuiteData){
     var self = this;
-    this.model.set(initTestData);
+    this.model.set(initTestSuiteData);
 
-    let tasks = this.model.get("tasks");
+    let problems = this.model.get("problems");
 
-    if(tasks.length>0){
-      tasks.each(function(model){
-        let taskView = taskViewFactory.create(model);
-        self.taskViews.push(taskView);
+    if(problems.length>0){
+      problems.each(function(model){
+        let problemView = problemViewFactory.create(model);
+        self.problemViews.push(problemView);
       });
 
       this.setCurrentView(0);
@@ -97,10 +98,10 @@ export let TestView = Backbone.View.extend({
   },
 
   setCurrentView: function(index){
-    if(_.isNumber(index) && this.taskViews[index]) {
-      this._hideAllTasks();
+    if(_.isNumber(index) && this.problemViews[index]) {
+      this._hideAllProblems();
 
-      this.currentView = this.taskViews[index];
+      this.currentView = this.problemViews[index];
       this.currentView.show();
     }else{
       throw 'index not specify or view with this index undefined';
@@ -123,8 +124,8 @@ export let TestView = Backbone.View.extend({
   render: function() {
     var self = this;
     this.$el.html(template({}));
-    _.each(this.taskViews, function(taskView){
-      self.$(".tasks").append(taskView.render().$el);
+    _.each(this.problemViews, function(problemView){
+      self.$(".problems").append(problemView.render().$el);
     });
     return this;
   },
@@ -134,7 +135,7 @@ export let TestView = Backbone.View.extend({
   _checkSolutionHandler: function(){
     let self = this;
     let model = this.currentView.model;
-    this.testService.checkTaskSolution(model.toJSON()).done(function(result){
+    this.testSuiteService.checkProblemSolution(model.toJSON()).done(function(result){
       result = JSON.parse(result);
 
       model.set(result);
@@ -146,39 +147,39 @@ export let TestView = Backbone.View.extend({
     this.trigger("showResultsPage");
   },
 
-  _taskNavHandler: function(data){
-    let index = this.taskViews.indexOf(this.currentView);
+  _problemNavHandler: function(data){
+    let index = this.problemViews.indexOf(this.currentView);
 
-    data.direction.first && this._showFirstTask();
-    data.direction.prev && this._showPrevTask(index);
-    data.direction.next && this._showNextTask(index);
-    data.direction.last && this._showLastTask();
+    data.direction.first && this._showFirstProblem();
+    data.direction.prev && this._showPrevProblem(index);
+    data.direction.next && this._showNextProblem(index);
+    data.direction.last && this._showLastProblem();
   },
 
-  _showFirstTask: function(){
+  _showFirstProblem: function(){
     let index = 0;
     this.setCurrentView(index);
   },
 
-  _showPrevTask: function(index){
-    if(!this.taskViews[index-1]){ return; }
+  _showPrevProblem: function(index){
+    if(!this.problemViews[index-1]){ return; }
     this.setCurrentView(index-1);
   },
 
-  _showNextTask: function(index){
-    if(!this.taskViews[index+1]){ return; }
+  _showNextProblem: function(index){
+    if(!this.problemViews[index+1]){ return; }
 
     this.setCurrentView(index+1);
   },
 
-  _showLastTask: function(){
-    let index = this.taskViews.length-1;
+  _showLastProblem: function(){
+    let index = this.problemViews.length-1;
     this.setCurrentView(index);
   },
 
-  _hideAllTasks: function(){
-    this.taskViews.forEach(function(taskView){
-      taskView.hide();
+  _hideAllProblems: function(){
+    this.problemViews.forEach(function(problemView){
+      problemView.hide();
     });
   }
 }).extend(displayMixin);

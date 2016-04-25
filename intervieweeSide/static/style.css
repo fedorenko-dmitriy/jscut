@@ -43,15 +43,15 @@ body {
   font-weight: bold;
 }
 
-.task{
+.problem{
   display: none;
 }
 
-.task:first-of-type{
+.problem:first-of-type{
    display: block;
  }
 
-.task:first-child{
+.problem:first-child{
    display: block;
 }
 

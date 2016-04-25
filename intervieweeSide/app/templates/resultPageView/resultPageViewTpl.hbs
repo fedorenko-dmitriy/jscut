@@ -10,9 +10,9 @@
 <br/>
 <h3>Общая информация</h3>
   <div class="row">
-    <div class="col-md-12">Количество правильных ответов: {{score data.tasks type="right"}}</div>
-    <div class="col-md-12">Количество неправильных ответов: {{score data.tasks type="wrong"}}</div>
-    <div class="col-md-12">Количество тестов без ответов: {{score data.tasks type="any"}}</div>
+    <div class="col-md-12">Количество правильных ответов: {{score data.problems type="right"}}</div>
+    <div class="col-md-12">Количество неправильных ответов: {{score data.problems type="wrong"}}</div>
+    <div class="col-md-12">Количество тестов без ответов: {{score data.problems type="any"}}</div>
   </div>
 <hr/>
 <h3>Результаты выполненых заданий</h3>
@@ -23,18 +23,18 @@
       <th>Ответ пользователя</th>
       <th>Результат выполнения</th>
   </tr>
-  {{#each data.tasks}}
+  {{#each data.problems}}
     <tr>
-      <td>{{this.number}}</td>
-      <td>{{taskName}}</td>
+      <td>{{this.id}}</td>
+      <td>{{name}}</td>
         <td>
           {{#if variantsOfSolutions}}
-              {{#each taskSolution}}
+              {{#each problemSolution}}
                 {{lookup ../variantsOfSolutions this}}
               {{/each}}
 
           {{else}}
-            {{taskSolution}}
+            {{problemSolution}}
           {{/if}}
         </td>
       <td>

@@ -11,13 +11,13 @@ helpers.init();
 import { AppModel } from './models/AppModel';
 import { timeService } from './services/timeService.js'
 
-import { TestView } from './views/TestView';
+import { TestSuiteView } from './views/TestSuiteView';
 import { StartPageView } from './views/StartPageView.js'
 import { ResultPageView } from './views/ResultPageView';
 
 let appModel = new AppModel({timeService: timeService}),
     startPageView = new StartPageView(),
-    testView = new TestView({model: appModel}),
+    testSuiteView = new TestSuiteView({model: appModel}),
     resultPageView = new ResultPageView({model: appModel});
 
 let MainView = Backbone.View.extend({
@@ -27,7 +27,7 @@ let MainView = Backbone.View.extend({
 
   events: {
     "click .showStartPage": "_onClickShowStartPage",
-    "click .showTestPage": "_onClickShowTestPage",
+    "click .showTestSuitePage": "_onClickShowTestSuitePage",
     "click .showResultPage": "_onClickShowResultPage"
   },
 
@@ -35,8 +35,8 @@ let MainView = Backbone.View.extend({
     this.trigger("method::_showStartPage");
   },
 
-  _onClickShowTestPage: function(){
-    this.trigger("method::_showTestPage");
+  _onClickShowTestSuitePage: function(){
+    this.trigger("method::_showTestSuiteSuitePage");
   },
 
   _onClickShowResultPage: function(){
@@ -44,43 +44,43 @@ let MainView = Backbone.View.extend({
   },
 
   _initEvents: function(){
-    this.listenTo(startPageView, "startTestSuite", this._startTestSuite);
-    this.listenTo(testView, "showResultsPage",this._showResultPage);
-    this.listenTo(resultPageView, "showTest",this._showTestPage);
+    this.listenTo(startPageView, "startTestSuite", this._startTestSuiteSuite);
+    this.listenTo(testSuiteView, "showResultsPage",this._showResultPage);
+    this.listenTo(resultPageView, "showTestSuite",this._showTestSuitePage);
 
     this.on("method::_showStartPage", this._showStartPage);
-    this.on("method::_showTestPage", this._showTestPage);
+    this.on("method::_showTestSuitePage", this._showTestSuitePage);
     this.on("method::_showResultPage", this._showResultPage);
   },
 
-  _startTestSuite: function(){
+  _startTestSuiteSuite: function(){
     let self = this;
-    testView.getTestData().done(function() {
+    testSuiteView.getTestSuiteData().done(function() {
       self._appendViews();
-      self._showTestPage();
+      self._showTestSuitePage();
     });
   },
 
   _showStartPage: function(){
     startPageView.show();
-    testView.hide();
+    testSuiteView.hide();
     resultPageView.hide();
   },
 
-  _showTestPage: function(){
+  _showTestSuitePage: function(){
     startPageView.hide();
-    testView.show();
+    testSuiteView.show();
     resultPageView.hide();
   },
 
   _showResultPage: function(){
     startPageView.hide();
-    testView.hide();
+    testSuiteView.hide();
     resultPageView.show();
   },
 
   _appendViews: function(){
-    $('.container').append(testView.render().$el)
+    $('.container').append(testSuiteView.render().$el)
       .append(resultPageView.render().$el);
   },
 

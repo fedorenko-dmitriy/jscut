@@ -14,8 +14,8 @@ export let AppModel = Backbone.Model.extend({
   },
 
   set: function(params){
-    if(_.isObject(params) && _.isArray(params.tasks)){
-      params.tasks = new Backbone.Collection(params.tasks);
+    if(_.isObject(params) && _.isArray(params.problems)){
+      params.problems = new Backbone.Collection(params.problems);
     }
     Backbone.Model.prototype.set.apply(this, arguments);
   },
@@ -36,7 +36,7 @@ export let AppModel = Backbone.Model.extend({
 
   toJSON: function(){
     let objJSON = Backbone.Model.prototype.toJSON.apply(this);
-    objJSON.tasks = this.get("tasks") ? this.get("tasks").toJSON() : [];
+    objJSON.problems = this.get("problems") ? this.get("problems").toJSON() : [];
 
     return objJSON;
   }

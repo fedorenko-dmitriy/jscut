@@ -7,19 +7,19 @@ var mock = require("../mocks/testSuiteData");
 
 helpers.init();
 
-import { TestView } from '../../../app/views/TestView';
+import { TestSuiteView } from '../../../app/views/TestSuiteView';
 import { AppModel } from '../../../app/models/AppModel';
 import { timeService } from '../../../app/services/timeService';
 
 
-describe('Test View Tests', function () {
+describe('TestSuiteView Tests', function () {
   let testView,
       testModel,
       sandbox;
 
   beforeEach(()=>{
     testModel = new AppModel({timeService: timeService});
-    testView = new TestView({model: testModel});
+    testView = new TestSuiteView({model: testModel});
     sandbox = sinon.sandbox.create();
   });
 
@@ -28,36 +28,36 @@ describe('Test View Tests', function () {
     sandbox.restore();
   });
 
-  describe("method getTestData", ()=>{
+  describe("method getTestSuiteData", ()=>{
     let testView;
     beforeEach(()=>{
-      sandbox.stub(TestView.prototype, "setInitData");
-      let testService = {getTest : function(){return $.Deferred()}};
-      testView = new TestView({
+      sandbox.stub(TestSuiteView.prototype, "setInitData");
+      let testService = {getTestSuite : function(){return $.Deferred()}};
+      testView = new TestSuiteView({
         model: testModel,
         testService :testService
       });
 
     });
 
-    it("should call setInitData if testData received from server when method 'getTestData' is called", (done)=>{
-      let resultDFD = returnGetTestDataResult(done);
+    it("should call setInitData if testData received from server when method 'getTestSuiteData' is called", (done)=>{
+      let resultDFD = returnGetTestSuiteDataResult(done);
 
       resultDFD.resolve();
 
       expect(testView.setInitData.called).to.equal(true);
     });
 
-    it("should throw exception if testData didn't receive from server when method 'getTestData' is called", (done)=>{
-      let resultDFD = returnGetTestDataResult(done);
+    it("should throw exception if testData didn't receive from server when method 'getTestSuiteData' is called", (done)=>{
+      let resultDFD = returnGetTestSuiteDataResult(done);
 
       resultDFD.reject();
 
       expect(resultDFD.state).to.equal("rejected");
     });
 
-    function returnGetTestDataResult(done){
-      let resultDFD = testView.getTestData();
+    function returnGetTestSuiteDataResult(done){
+      let resultDFD = testView.getTestSuiteData();
 
       resultDFD.always(function(){
         done();
@@ -69,46 +69,46 @@ describe('Test View Tests', function () {
 
   describe("method setInitData", ()=>{
     beforeEach(()=>{
-      let data = mock.getTestSuitData();
+      let data = mock.getTestSuiteData();
       testView.setInitData(data).render();
     });
 
-    it("should append sub views into testView.taskViews when method 'setInitData' is called", ()=>{
-      expect(testView.model.get("tasks")).to.have.lengthOf(4);
+    it("should append sub views into testView.problemViews when method 'setInitData' is called", ()=>{
+      expect(testView.model.get("problems")).to.have.lengthOf(4);
     });
 
     it("should call method 'setCurrentView' when method 'setInitData' is called", ()=>{
-      let stub = sandbox.stub(TestView.prototype, "setCurrentView");
-      testView.setInitData({tasks:[{some:"data"}]});
+      let stub = sandbox.stub(TestSuiteView.prototype, "setCurrentView");
+      testView.setInitData({problems:[{some:"data"}]});
       expect(stub.called).to.equal(true);
     });
 
-    it("should set first view in taskView array as currentView when method 'setInitData' is called", ()=>{
-      expect(testView.currentView).to.equal(testView.taskViews[0]);
+    it("should set first view in problemView array as currentView when method 'setInitData' is called", ()=>{
+      expect(testView.currentView).to.equal(testView.problemViews[0]);
     });
 
-    it("shouldn't call method 'setCurrentView' when length of collection tasks <=0'", ()=>{
-      let stub = sandbox.stub(TestView.prototype, "setCurrentView");
-      testView.setInitData({tasks:[]});
+    it("shouldn't call method 'setCurrentView' when length of collection problems <=0'", ()=>{
+      let stub = sandbox.stub(TestSuiteView.prototype, "setCurrentView");
+      testView.setInitData({problems:[]});
       expect(stub.called).to.equal(false);
     });
   });
 
   describe("method setCurrentView", function(){
     beforeEach(()=>{
-      let data = mock.getTestSuitData();
+      let data = mock.getTestSuiteData();
       testView.setInitData(data).render();
     });
 
-    it("should set current view of task view " +
+    it("should set current view of problem view " +
       "when method setCurrentView called with index position of selected view", ()=>{
       testView.setCurrentView(1);
-      expect(testView.currentView).to.equal(testView.taskViews[1]);
+      expect(testView.currentView).to.equal(testView.problemViews[1]);
     });
 
     it("should throw exception " +
       "when method setCurrentView called with wrong index position of selected view", ()=>{
-      let spy = sandbox.spy(TestView.prototype, "setCurrentView");
+      let spy = sandbox.spy(TestSuiteView.prototype, "setCurrentView");
       spy.args[0]=5;
 
       expect(spy).to.throw();
@@ -116,17 +116,17 @@ describe('Test View Tests', function () {
 
     it("should throw exception " +
       "when method setCurrentView called without index position of selected view", ()=>{
-      let spy = sandbox.spy(TestView.prototype, "setCurrentView");
-      testView.setInitData({tasks:[{task:1}, {task:1}]});
+      let spy = sandbox.spy(TestSuiteView.prototype, "setCurrentView");
+      testView.setInitData({problems:[{problem:1}, {problem:1}]});
 
       expect(spy).to.throw();
     });
 
     it("should throw exception " +
       "when method setCurrentView called with argument which is not number", ()=>{
-      let spy = sandbox.spy(TestView.prototype, "setCurrentView");
+      let spy = sandbox.spy(TestSuiteView.prototype, "setCurrentView");
       spy.args[0]="five";
-      testView.setInitData({tasks:[{task:1}, {task:1}]});
+      testView.setInitData({problems:[{problem:1}, {problem:1}]});
 
       expect(spy).to.throw();
     });
@@ -135,17 +135,17 @@ describe('Test View Tests', function () {
   describe("Application Event 'method::_checkSolutionHandler'", ()=>{
     let testView;
     beforeEach(()=>{
-      let data = mock.getTestSuitData();
+      let data = mock.getTestSuiteData();
 
       let result = JSON.stringify({some:data});
-      let testService = {
-        checkTaskSolution : function(){
+      let testSuiteService = {
+        checkProblemSolution : function(){
           return $.Deferred().resolve(result);
         }
       };
-      testView = new TestView({
+      testView = new TestSuiteView({
         model: testModel,
-        testService :testService
+        testSuiteService :testSuiteService
       });
       testView.setInitData(data).render();
     });
@@ -168,96 +168,96 @@ describe('Test View Tests', function () {
     });
   });
 
-  describe("Application Event 'method::_taskNavHandler'", ()=>{
+  describe("Application Event 'method::_problemNavHandler'", ()=>{
     beforeEach(()=>{
-      let data = mock.getTestSuitData();
+      let data = mock.getTestSuiteData();
       testView.setInitData(data).render();
     });
 
-    it("should change current view to next view in taskView array " +
+    it("should change current view to next view in problemView array " +
       "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.first'", ()=>{
       let index = 2;
-      testView.currentView = testView.taskViews[index];
+      testView.currentView = testView.problemViews[index];
 
-      testView.trigger("method::_taskNavHandler", {
+      testView.trigger("method::_problemNavHandler", {
         direction: {first:true}
       });
 
-      expect(testView.currentView).to.equals(testView.taskViews[0]);
+      expect(testView.currentView).to.equals(testView.problemViews[0]);
     });
 
-    it("should change current view to next view in taskView array " +
+    it("should change current view to next view in problemView array " +
       "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.next'", ()=>{
       let index = 0;
-      testView.currentView = testView.taskViews[index];
+      testView.currentView = testView.problemViews[index];
 
-      testView.trigger("method::_taskNavHandler", {
+      testView.trigger("method::_problemNavHandler", {
         index: index,
         direction: {next:true}
       });
 
-      expect(testView.currentView).to.equals(testView.taskViews[index+1]);
+      expect(testView.currentView).to.equals(testView.problemViews[index+1]);
     });
 
-    it("shouldn't change current view to next view if it last view in taskView array " +
+    it("shouldn't change current view to next view if it last view in problemView array " +
       "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.next'", ()=>{
 
-      let index = testView.taskViews.length-1;
-      testView.currentView = testView.taskViews[index];
+      let index = testView.problemViews.length-1;
+      testView.currentView = testView.problemViews[index];
 
-      testView.trigger("method::_taskNavHandler", {
+      testView.trigger("method::_problemNavHandler", {
         index: index,
         direction: {next:true}
       });
 
-      expect(testView.currentView).to.equals(testView.taskViews[index]);
+      expect(testView.currentView).to.equals(testView.problemViews[index]);
     });
 
-    it("should change current view to previous view in taskView array " +
+    it("should change current view to previous view in problemView array " +
       "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.prev'", ()=>{
 
-      let index = testView.taskViews.length-1;
-      testView.currentView = testView.taskViews[index];
+      let index = testView.problemViews.length-1;
+      testView.currentView = testView.problemViews[index];
 
-      testView.trigger("method::_taskNavHandler", {
+      testView.trigger("method::_problemNavHandler", {
         index: index,
         direction: {prev:true}
       });
 
-      expect(testView.currentView).to.equals(testView.taskViews[index-1]);
+      expect(testView.currentView).to.equals(testView.problemViews[index-1]);
     });
 
-    it("shouldn't change current view to previous if it first view in taskView array " +
+    it("shouldn't change current view to previous if it first view in problemView array " +
       "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.prev'", ()=>{
 
       let index = 0;
-      testView.currentView = testView.taskViews[index];
+      testView.currentView = testView.problemViews[index];
 
-      testView.trigger("method::_taskNavHandler", {
+      testView.trigger("method::_problemNavHandler", {
         index: index,
         direction: {prev:true}
       });
 
-      expect(testView.currentView).to.equals(testView.taskViews[index]);
+      expect(testView.currentView).to.equals(testView.problemViews[index]);
     });
 
-    it("shouldn't change current view to last view in taskView array " +
+    it("shouldn't change current view to last view in problemView array " +
       "when event 'method::_checkSolutionHandler' is triggered with argument 'direction.last'", ()=>{
 
-      let index = testView.taskViews.length-1;
-      testView.currentView = testView.taskViews[index];
+      let index = testView.problemViews.length-1;
+      testView.currentView = testView.problemViews[index];
 
-      testView.trigger("method::_taskNavHandler", {
+      testView.trigger("method::_problemNavHandler", {
         direction: {last:true}
       });
 
-      expect(testView.currentView).to.equals(testView.taskViews[index]);
+      expect(testView.currentView).to.equals(testView.problemViews[index]);
     });
   });
 
   describe("Application Event 'method::_showResultsHandler'", ()=>{
     beforeEach(()=>{
-      let data = mock.getTestSuitData();
+      let data = mock.getTestSuiteData();
       testView.setInitData(data).render();
     });
 

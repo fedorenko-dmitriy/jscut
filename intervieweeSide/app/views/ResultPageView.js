@@ -24,8 +24,8 @@ export let ResultPageView = Backbone.View.extend({
     this.listenTo(this.model, "change", this._modelChanged);
   },
 
-  _showTest: function() {
-    this.trigger("showTest");
+  _showTestSuite: function() {
+    this.trigger("showTestSuite");
   },
 
   _modelChanged: function() {
@@ -41,7 +41,7 @@ export let ResultPageView = Backbone.View.extend({
   },
 
   render: function render() {
-    console.log(this.model.toJSON().tasks);
+    console.log(this.model.toJSON().problems);
     this.$el.html(template({data: this.model.toJSON()}));
     return this;
   }

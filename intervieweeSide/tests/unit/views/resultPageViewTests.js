@@ -11,7 +11,7 @@ describe('ResultPage View Tests', function () {
   let resultPageView, model, sandbox;
 
   beforeEach(()=> {
-    model = new Backbone.Model({tasks: new Backbone.Collection()});
+    model = new Backbone.Model({problems: new Backbone.Collection()});
     resultPageView = new ResultPageView({model: model});
     sandbox = sinon.sandbox.create();
     document.body.appendChild(resultPageView.el);
