@@ -15,7 +15,7 @@ import { TestSuiteView } from './views/TestSuiteView';
 import { StartPageView } from './views/StartPageView.js'
 import { ResultPageView } from './views/ResultPageView';
 
-let appModel = new AppModel({timeService: timeService}),
+let appModel = new AppModel(),
     startPageView = new StartPageView(),
     testSuiteView = new TestSuiteView({model: appModel}),
     resultPageView = new ResultPageView({model: appModel});
@@ -36,7 +36,7 @@ let MainView = Backbone.View.extend({
   },
 
   _onClickShowTestSuitePage: function(){
-    this.trigger("method::_showTestSuiteSuitePage");
+    this.trigger("method::_showTestSuitePage");
   },
 
   _onClickShowResultPage: function(){
@@ -44,7 +44,7 @@ let MainView = Backbone.View.extend({
   },
 
   _initEvents: function(){
-    this.listenTo(startPageView, "startTestSuite", this._startTestSuiteSuite);
+    this.listenTo(startPageView, "startTestSuite", this._startTestSuite);
     this.listenTo(testSuiteView, "showResultsPage",this._showResultPage);
     this.listenTo(resultPageView, "showTestSuite",this._showTestSuitePage);
 
@@ -53,7 +53,7 @@ let MainView = Backbone.View.extend({
     this.on("method::_showResultPage", this._showResultPage);
   },
 
-  _startTestSuiteSuite: function(){
+  _startTestSuite: function(){
     let self = this;
     testSuiteView.getTestSuiteData().done(function() {
       self._appendViews();

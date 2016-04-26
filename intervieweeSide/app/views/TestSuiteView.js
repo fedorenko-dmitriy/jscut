@@ -9,6 +9,7 @@ let displayMixin = require('../mixins/displayMixin');
 
 import { testSuiteService } from "../services/testSuiteService.js";
 import { problemViewFactory } from './problemViewFactory';
+import { timeService } from '../services/timeService.js';
 
 let template = require("../templates/testSuiteView/testSuiteViewTpl.hbs");
 
@@ -17,6 +18,7 @@ export let TestSuiteView = Backbone.View.extend({
 
   initialize: function(options) {
     options = options||{};
+    this.timeService = timeService;
     this.testSuiteService = options.testSuiteService ? options.testSuiteService : testSuiteService; // ToDo Hack: this string create only for testing
     this.model = options.model;
     this._initEvents();
@@ -30,7 +32,8 @@ export let TestSuiteView = Backbone.View.extend({
   },
 
   _initEvents: function(){
-    this.listenTo(this.model,"time", this.updateTimer);
+    this.listenTo(this.timeService,"timerIsUpdated", this.updatePageTimer);
+    this.listenTo(this.timeService,"timerIsStopped", this._showResultsHandler);
 
     this.on("method::_checkSolutionHandler", this._checkSolutionHandler);
     this.on("method::_problemNavHandler", this._problemNavHandler);
@@ -71,7 +74,7 @@ export let TestSuiteView = Backbone.View.extend({
       if(_.isString(initTestSuiteData)) initTestSuiteData = JSON.parse(initTestSuiteData); //ToDo should be tested
       if(initTestSuiteData && initTestSuiteData.problems.length>0){
         self.setInitData(initTestSuiteData);
-        setTimeout(dfd.resolve, 1000);
+        dfd.resolve();
       } else{
         dfd.reject();
       }
@@ -83,6 +86,7 @@ export let TestSuiteView = Backbone.View.extend({
   setInitData: function(initTestSuiteData){
     var self = this;
     this.model.set(initTestSuiteData);
+    this.timeService.start();
 
     let problems = this.model.get("problems");
 
@@ -110,14 +114,8 @@ export let TestSuiteView = Backbone.View.extend({
     return this;
   },
 
-  updateTimer: function() {
-    let timer = this.model.get("timer");
-    this.$(".timer>.time").html(timer.remainingMinutes + ":" + timer.remainingSeconds);
-
-    if (timer.testEnded) {
-      this.trigger("showResults");
-    }
-
+  updatePageTimer: function(timeToRender) {
+    this.$(".timer>.time").html(timeToRender.remainingMinutes + ":" + timeToRender.remainingSeconds);
     return this;
   },
 
@@ -138,7 +136,8 @@ export let TestSuiteView = Backbone.View.extend({
     this.testSuiteService.checkProblemSolution(model.toJSON()).done(function(result){
       result = JSON.parse(result);
 
-      model.set(result);
+      self.timeService.update();
+
       self.model.trigger("change", this.model);
     });
   },

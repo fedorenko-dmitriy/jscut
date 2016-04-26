@@ -1,93 +1,112 @@
 "use strict";
 
 let _ = require('underscore');
+let $ = require('jquery-untouched');
 let Backbone = require('backbone');
 
-//let timer = {};
-let setTimer;
-let absoluteTime = 0;
-let remainingTime = 100;
+let timeToRender = {};
+
+var timerHandler;
+
 
 export let timeService = _.extend({
   timer : {},
-  init: function(options){
-    options = options || {};
-    remainingTime = options.duration || 100;
-    return this;
+
+  set: function(time){
+    timer.testIsEnded = time.testIsEnded;
+    timer.absoluteTime = time.absoluteTime ? time.absoluteTime : 0;
+    timer.remainingTime = time.remainingTime ? time.remainingTime : 60;
   },
-  startTimer: function(){
-    console.log("start");
-    timerHandler.apply(this);
+
+  get: function(){
+    return {
+      testIsEnded :timer.testIsEnded,
+      absoluteTime : timer.absoluteTime,
+      remainingTime : timer.remainingTime
+    }
+  },
+
+  start: function(){
+    let self = this;
+    $.getJSON("http://127.0.0.1:8080/startTimer").done(function(time){
+      self.set(time);
+      timerHandler = setInterval(_.bind(timer, self), 1000);
+    });
+  },
+
+  update: function(){
+    let self = this;
+    $.getJSON("http://127.0.0.1:8080/getTime").done(function(time){
+      if(!_.isEmpty(self.get()) && _.isEmpty(time)){
+        self.timeIsStopped();
+        clearInterval(timerHandler);
+      }
+
+      self.set(time);
+      if(time.testIsEnded || _.isEmpty(time)){
+        self.timeIsStopped();
+        clearInterval(timerHandler)
+      }else{
+        self.timeIsUpdated();
+      }
+    });
+  },
+
+  stop: function(){
+    let self = this;
+    $.getJSON("http://127.0.0.1:8080/stopTimer").done(function(time){
+      self.set(time);
+      self.timeIsStopped();
+    });
+    clearInterval(timerHandler);
   },
 
   timeIsUpdated: function(){
-    this.trigger("timerIsUpdated", this.timer);
+    getPassedTime();
+    getRemainingTime();
+    this.trigger("timerIsUpdated", timeToRender);
   },
 
-  updateTimer: function(key, value){
-    this.timer[key] = value;
+  timeIsStopped: function(){
+    getPassedTime();
+    getRemainingTime();
+    this.trigger("timerIsStopped", timeToRender);
   }
 
 }, Backbone.Events);
 
-let stopTimer = function(){
-  clearInterval(setTimer);
-  console.log("stop");
-};
 
-let checkTime = function(){
-  if(absoluteTime < remainingTime){
-    return absoluteTime;
-  } else{
-    return false;
-  }
-};
+function timer(){
+  timer.absoluteTime += 1;
+  timer.remainingTime -= 1;
 
-let timerHandler = function(){
-  var self = this;
-  setTimer = setInterval(function(){
-    let time = checkTime.apply(self);
-    if(time === 0){
-      absoluteTime = 1;
-      setPassedTime.apply(self);
-      setRemainingTime.apply(self);
-    }
-    else if(time ){
-      absoluteTime +=1;
-      setPassedTime.apply(self);
-      setRemainingTime.apply(self);
-    } else{
-      stopTimer();
+  this.timeIsUpdated();
 
-      self.updateTimer("testEnded", true);
-    }
-    timeService.timeIsUpdated();
-  },1000);
-};
-
-
-let setPassedTime = function(){
-  let time = absoluteTime;
-  var minutes = time/60;
-  let seconds = 0;
-  if(parseInt(minutes) === minutes){
-    seconds = 0;
-  } else if(parseInt(minutes) === 0){
-    seconds = time
-  }
-  else{
-    seconds = time - parseInt(minutes)*60;
+  if(!timer.remainingTime){
+    timeService.stop();
   }
 
-  //timer.passedMinutes = appendZero(parseInt(minutes));
-  //timer.passedSeconds = appendZero(seconds);
+  console.log(timer.absoluteTime)
+}
 
-  this.updateTimer("passedMinutes", appendZero(parseInt(minutes)));
-  this.updateTimer("passedSeconds", appendZero(seconds));
-};
+function getPassedTime(){
+  let time = timeConverter(timer.absoluteTime);
 
-let setRemainingTime = function(){
-  let time = remainingTime - absoluteTime;
+  timeToRender.passedMinutes = time.minutes;
+  timeToRender.passedSeconds = time.seconds;
+}
+
+function getRemainingTime(){
+  let time = timeConverter(timer.remainingTime);
+
+  timeToRender.remainingMinutes = time.minutes;
+  timeToRender.remainingSeconds = time.seconds;
+
+  console.log(timeToRender.remainingMinutes);
+  console.log(timeToRender.remainingSeconds);
+}
+
+let timeConverter = function(time){
   var minutes = time/60;
   let seconds = 0;
   if(parseInt(minutes) === minutes){
@@ -100,11 +119,10 @@ let setRemainingTime = function(){
     seconds = time - parseInt(minutes)*60;
   }
 
-  //timer.remainingMinutes = appendZero(parseInt(minutes));
-  //timer.remainingSeconds = appendZero(seconds);
-
-  this.updateTimer("remainingMinutes", appendZero(parseInt(minutes)));
-  this.updateTimer("remainingSeconds", appendZero(seconds));
+  return {
+    minutes: appendZero(parseInt(minutes)),
+    seconds: appendZero(seconds)
+  }
 };
 
 let appendZero = function(time){
@@ -113,6 +131,3 @@ let appendZero = function(time){
   }
   return time;
 };
-
-
-
