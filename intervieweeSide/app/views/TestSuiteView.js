@@ -13,7 +13,7 @@ import { timeService } from '../services/timeService.js';
 
 let template = require("../templates/testSuiteView/testSuiteViewTpl.hbs");
 
-export let TestSuiteView = Backbone.View.extend({
+export let TestSuiteView = Backbone.View.extend(_.extend({
   className:"testSuite",
 
   initialize: function(options) {
@@ -32,8 +32,8 @@ export let TestSuiteView = Backbone.View.extend({
   },
 
   _initEvents: function(){
-    this.listenTo(this.timeService,"timerIsUpdated", this.updatePageTimer);
-    this.listenTo(this.timeService,"timerIsStopped", this._showResultsHandler);
+    this.listenTo(this.timeService, "timerIsUpdated", this.updatePageTimer);
+    this.listenTo(this.timeService, "timerIsStopped", this._showResultsHandler);
 
     this.on("method::_checkSolutionHandler", this._checkSolutionHandler);
     this.on("method::_problemNavHandler", this._problemNavHandler);
@@ -71,7 +71,6 @@ export let TestSuiteView = Backbone.View.extend({
     let dfd = $.Deferred();
 
     this.testSuiteService.getTestSuite().done(function(initTestSuiteData){
-      if(_.isString(initTestSuiteData)) initTestSuiteData = JSON.parse(initTestSuiteData); //ToDo should be tested
       if(initTestSuiteData && initTestSuiteData.problems.length>0){
         self.setInitData(initTestSuiteData);
         dfd.resolve();
@@ -86,7 +85,7 @@ export let TestSuiteView = Backbone.View.extend({
   setInitData: function(initTestSuiteData){
     var self = this;
     this.model.set(initTestSuiteData);
-    this.timeService.start();
+    this.timeService.start();   // ToDo test
 
     let problems = this.model.get("problems");
 
@@ -138,7 +137,7 @@ export let TestSuiteView = Backbone.View.extend({
 
       self.timeService.update();
 
-      self.model.trigger("change", this.model);
+      self.model.trigger("change", self.model);
     });
   },
 
@@ -181,5 +180,6 @@ export let TestSuiteView = Backbone.View.extend({
       problemView.hide();
     });
   }
-}).extend(displayMixin);
+
+},displayMixin));
 
