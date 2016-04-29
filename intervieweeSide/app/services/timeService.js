@@ -12,18 +12,30 @@ var timerHandler;
 export let timeService = _.extend({
   timer : {},
 
-  set: function(time){
-    timer.testIsEnded = time.testIsEnded;
-    timer.absoluteTime = time.absoluteTime ? time.absoluteTime : 0;
-    timer.remainingTime = time.remainingTime ? time.remainingTime : 60;
+  set: function(key, value){
+    if(_.isObject(key)){
+      timer.testIsEnded = key.testIsEnded;
+      timer.absoluteTime = key.absoluteTime ? key.absoluteTime : 0;
+      timer.remainingTime = key.remainingTime ? key.remainingTime : 60;
+    }
+    if(_.isString(key)){
+      if(_.isNaN(value)) throw "value should be integer";
+      if(_.isUndefined(timer[key])) throw "value should be integer";
+      timer[key] = value;
+    }
+
   },
 
-  get: function(){
-    return {
-      testIsEnded :timer.testIsEnded,
-      absoluteTime : timer.absoluteTime,
-      remainingTime : timer.remainingTime
-    }
+  get: function(name){
+    let timerData = {
+      testIsEnded :timer.testIsEnded ? timer.testIsEnded : false,
+      absoluteTime : timer.absoluteTime ? timer.absoluteTime : null,
+      remainingTime : timer.remainingTime ? timer.remainingTime : null
+    };
+
+    if(name && _.isUndefined(timerData[name])) return undefined;
+
+    return (name ? timerData[name] : timerData);
   },
 
   start: function(){
