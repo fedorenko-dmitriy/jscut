@@ -19,8 +19,9 @@ export let timeService = _.extend({
       timer.remainingTime = key.remainingTime ? key.remainingTime : 60;
     }
     if(_.isString(key)){
-      if(_.isNaN(value)) throw "value should be integer";
-      if(_.isUndefined(timer[key])) throw "value should be integer";
+      if(key == "testIsEnded" && !_.isBoolean(value)) {throw "value should be boolean";}
+      else if(key == "absoluteTime" && !_.isNumber(value)){throw "value should be integer";}
+      else if(key == "remainingTime" && !_.isNumber(value)){throw "value should be integer";}
       timer[key] = value;
     }
 
@@ -73,13 +74,13 @@ export let timeService = _.extend({
     clearInterval(timerHandler);
   },
 
-  timeIsUpdated: function(){
+  timeIsUpdated: function(){ //ToDo change method name to action
     getPassedTime();
     getRemainingTime();
     this.trigger("timerIsUpdated", timeToRender);
   },
 
-  timeIsStopped: function(){
+  timeIsStopped: function(){ //ToDo change method name to action
     getPassedTime();
     getRemainingTime();
     this.trigger("timerIsStopped", timeToRender);
