@@ -134,10 +134,10 @@ export let TestSuiteView = Backbone.View.extend(_.extend({
     let model = this.currentView.model;
     this.testSuiteService.checkProblemSolution(model.toJSON()).done(function(result){
       result = JSON.parse(result);
-
+      model.set(result);
       self.timeService.update();
 
-      self.model.trigger("change", self.model);
+      model.trigger("change", self.model);
     });
   },
 

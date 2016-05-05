@@ -2,10 +2,9 @@
 let $ = require("jquery-untouched");
 let _ = require("underscore");
 let Backbone = require('backbone');
-var helpers = require("../../../app/util/hbs-helpers");
+
 var mock = require("../mocks/testSuiteData");
 
-helpers.init();
 
 import { TestSuiteView } from '../../../app/views/TestSuiteView';
 import { AppModel } from '../../../app/models/AppModel';
@@ -160,8 +159,16 @@ describe('TestSuiteView Tests', function () {
       expect(stub.called).to.equal(true);
     });
 
+    it("should call method 'set' in testSuiteView.currentView.model, when event 'method::_checkSolutionHandler' is triggered", ()=>{
+      let stub = sandbox.stub(testSuiteView.currentView.model, "set");
+
+      testSuiteView.trigger('method::_checkSolutionHandler');
+
+      expect(stub.called).to.equal(true);
+    });
+
     it("should trigger model event 'change' when event 'method::_checkSolutionHandler' is triggered", ()=>{
-      let stub = sandbox.stub(testSuiteView.model, "trigger");
+      let stub = sandbox.stub(testSuiteView.currentView.model, "trigger");
 
       testSuiteView.trigger('method::_checkSolutionHandler');
 
