@@ -1,7 +1,7 @@
 "use strict";
 
 let Backbone = require('backbone');
-let helpers = require("../../../app/util/hbs-helpers");
+let helpers = require("../../../app/utils/hbs-helpers");
 
 helpers.init();
 import { ResultPageView } from "../../../app/views/ResultPageView";

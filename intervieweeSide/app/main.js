@@ -2,7 +2,7 @@
 let $ = require('jquery-untouched');
 let Backbone = require('backbone');
 Backbone.$ = $;
-let helpers = require("./util/hbs-helpers");
+let helpers = require("./utils/hbs-helpers");
 
 let template = require("./templates/baseLayout/buttons.hbs");
 

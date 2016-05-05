@@ -1,7 +1,7 @@
 "use strict";
 let _ = require("underscore");
 let Backbone = require('backbone');
-var helpers = require("../../../app/util/hbs-helpers");
+var helpers = require("../.././hbs-helpers");
 
 var mock = require("../mocks/testSuiteData");
 

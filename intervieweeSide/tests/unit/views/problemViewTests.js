@@ -1,6 +1,6 @@
 "use strict";
 let Backbone = require('backbone');
-var helpers = require("../../../app/util/hbs-helpers");
+let helpers = require("../../../app/utils/hbs-helpers");
 
 helpers.init();
 
