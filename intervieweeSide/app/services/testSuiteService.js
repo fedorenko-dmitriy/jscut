@@ -8,7 +8,8 @@ export let testSuiteService = {
   },
 
   checkProblemSolution: function(problem){
-    problem = JSON.stringify(problem);
+    console.log(problem)
+    //problem = JSON.stringify(problem);
 
     return $.post("http://127.0.0.1:8080/checkProblemSolution", problem);
   }
