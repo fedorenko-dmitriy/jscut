@@ -37,6 +37,10 @@ body {
   color: red;
 }
 
+.notification.warning{
+  color: darkorange;
+}
+
 .notification>a{
   color: white;
   font-size: 17px;
@@ -62,6 +66,11 @@ body {
 .answerBlock.select .answers.has-error,
 .answerBlock.multiSelect .answers.has-error{
   background-color:#F4CCCC;
+}
+
+.answerBlock.select .answers.has-warning,
+.answerBlock.multiSelect .answers.has-warning{
+  background-color: darkorange;
 }
 
 
