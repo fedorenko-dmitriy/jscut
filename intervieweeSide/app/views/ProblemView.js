@@ -46,7 +46,7 @@ export let ProblemView = Backbone.View.extend({
     this.$(".answers").removeClass("has-success")
                    .removeClass("has-error");
 
-    if(this.model.get("isSolved")){
+    if(parseInt(this.model.get("isSolved"))>0){
       this.$(".success").addClass("show");
       this.$(".answers").addClass("has-success");
     } else {
