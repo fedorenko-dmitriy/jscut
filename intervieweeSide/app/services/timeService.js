@@ -99,7 +99,7 @@ function timer(){
     timeService.stop();
   }
 
-  console.log(timer.absoluteTime)
+  //console.log(timer.absoluteTime)
 }
 
 function getPassedTime(){
@@ -115,8 +115,8 @@ function getRemainingTime(){
   timeToRender.remainingMinutes = time.minutes;
   timeToRender.remainingSeconds = time.seconds;
 
-  console.log(timeToRender.remainingMinutes);
-  console.log(timeToRender.remainingSeconds);
+  //console.log(timeToRender.remainingMinutes);
+  //console.log(timeToRender.remainingSeconds);
 }
 
 let timeConverter = function(time){

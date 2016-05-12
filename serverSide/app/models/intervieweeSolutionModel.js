@@ -1,9 +1,6 @@
 "use strict";
 var _ = require("underscore");
-
-var IntervieweeTestSuiteModel = require("../db/intervieweeTestSuiteSchema");
-var TestSuiteModel = require("../db/testSuiteSchema");
-var IntervieweeModel = require("../db/intervieweeSchema");
+var IntervieweeSolutionModel = require("../db/intervieweeSolutionSchema");
 
 var opts = require("optimist").argv;
 var fs = require("fs");
@@ -14,7 +11,7 @@ var model = {
   set: function(collectionData) {
     console.log(collectionData);
     _.each(collectionData, function(itemData) {
-      var model = new IntervieweeTestSuiteModel(itemData);
+      var model = new IntervieweeSolutionModel(itemData);
       model.save(function(err) {
         if (err) {
           console.log("problem isn't saved");
@@ -28,19 +25,15 @@ var model = {
   },
 
   get: function(controllerCallback, param) {
-    console.log(param)
     if (param) {
-      IntervieweeTestSuiteModel.find(param, function(err, itemData) {
+      IntervieweeSolutionModel.find(param, function(err, itemData) {
         if (err) console.log(err);
-        console.log(itemData)
 
-
-
-        controllerCallback(itemData);
+        controllerCallback([itemData]);
       });
     } else {
-      IntervieweeTestSuiteModel.find(function(err, collectionData) {
-        //console.log(collectionData)
+      IntervieweesModel.find(function(err, collectionData) {
+        console.log(collectionData)
         if (err) console.log(err);
         console.log(collectionData.toString());
 
@@ -49,26 +42,27 @@ var model = {
     }
   },
 
-  update: function(){
-    //ToDo to implement
+  unset: function() {
+
   },
 
-  unset: function(){
-    //ToDo to implement
+  unsetAll: function() {  //ToDo This method is only for development
+    this.get(function(collectionData) {
+      _.each(collectionData, function(itemData) {
+        itemData.remove(function(err) {
+          if (err) {
+            console.log("problem isn't removed");
+          } else {
+            console.log("problem is removed");
+          }
+        })
+      });
+    });
   }
 };
 
 module.exports = model;
-
-function getIntervieweeById(){
-  //ToDo to implement
-}
-
-function getTetsSuiteById(){
-  //ToDo to implement
-}
-
-//CMD
+// CMD
 
 if(opts.path){
   var filePath = "/media/user/web_drive/PROJECT/JSCUT/serverSide/app/db/"+opts.path;
@@ -90,3 +84,4 @@ if(opts.get){
     });
   }
 }
+

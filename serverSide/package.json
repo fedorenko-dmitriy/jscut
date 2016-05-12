@@ -5,6 +5,8 @@
     "underscore": "~1.6.0",
     "express": "latest",
     "nconf": "latest",
-    "body-parser": "latest"
+    "body-parser": "latest",
+    "mongoose": "latest",
+    "optimist": "latest"
   }
 }

@@ -6,7 +6,7 @@ module.exports = {
   set: function(time){
     time = time || {};
     timer.absoluteTime = time.absoluteTime ? time.absoluteTime : 0;
-    timer.remainingTime = time.remainingTime ? time.remainingTime : 20;
+    timer.remainingTime = time.remainingTime ? time.remainingTime : 20000;
     return timeStamp();
   },
 
@@ -15,6 +15,7 @@ module.exports = {
   },
 
   start: function(){
+    if(timer.testIsEnded) timer.testIsEnded = false;
     timerHandler = setInterval(timer, 1000);
     return timeStamp();
   },
@@ -34,7 +35,7 @@ function timer(){
     clearInterval(timerHandler);
   }
 
-  //console.log(timer.absoluteTime)
+  //console.log(timer.remainingTime)
 }
 
 function timeStamp(){

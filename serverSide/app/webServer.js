@@ -28,10 +28,15 @@ app.use(function(req, res, next){
 
 app.use(function(req, res, next){
   if(req.url === "/getTestData"){
-    var testSuite = intervieweeTestSuiteController.getTestSuite(1);
-    testSuite.timer = timeController.set();
-    var json = JSON.stringify(testSuite);
-    res.end(json);
+    intervieweeTestSuiteController.getTestSuite(function(testSuite){
+      //testSuite.timer = timeController.set();
+
+      console.log(testSuite)
+
+      var json = JSON.stringify(testSuite);
+      res.end(json);
+    },1);
+
 
   }else{
     next();
