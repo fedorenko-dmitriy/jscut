@@ -14,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 var intervieweeTestSuiteController = require("./controllers/intervieweeTestSuiteController");
 var problemController = require("./controllers/problemController");
+var intervieweeSolutionController = require("./controllers/intervieweeSolutionController");
 var timeController = require("./controllers/timeController");
 
 http.createServer(app).listen(config.get("port"), function(){
@@ -46,12 +47,19 @@ app.use(function(req, res, next){
 app.use(function(req, res, next){
   if(req.url === "/checkProblemSolution"){
     var response;
-
-    if(timeController.get().remainingTime){
-      response = problemController.checkUserSolution(req.body)
-    }else{
-      response = req.body;
-    }
+    console.log("mu")
+    //if(timeController.get().remainingTime){
+       intervieweeSolutionController.checkIntervieweeSolution(
+        function(response){
+          console.log("llllllllll")
+          console.log(response)
+          res.end(JSON.stringify(response));
+        },
+        req.body
+      );
+    //}else{
+    //  response = req.body;
+    //}
 
     res.end(JSON.stringify(response));
   }else{

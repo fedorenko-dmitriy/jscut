@@ -1,87 +1,81 @@
 "use strict";
 var _ = require("underscore");
-var IntervieweeSolutionModel = require("../db/intervieweeSolutionSchema");
+var IntervieweeSolutionSchema = require("../db/intervieweeSolutionSchema");
+var ProblemSchema = require("../db/problemSchema");
 
-var opts = require("optimist").argv;
-var fs = require("fs");
-var path = require("path");
+var baseModel = require("./baseModel");
 
+var model = _.extend({
+  checkIntervieweeSolution: function(controllerCallback, requestObj){
+    var self = this;
 
-var model = {
-  set: function(collectionData) {
-    console.log(collectionData);
-    _.each(collectionData, function(itemData) {
-      var model = new IntervieweeSolutionModel(itemData);
-      model.save(function(err) {
-        if (err) {
-          console.log("problem isn't saved");
-          console.log(err);
-        } else {
-          console.log("problem is saved");
+    var problemId = requestObj.problem_id;
+    var solutionToSave = {
+      interviewee_id: requestObj.interviewee_id,
+      problem_id: problemId,
+      solution: requestObj.solution,
+      isSolved: -1
+    };
+    ProblemSchema.findOne({id:problemId}, function(err, itemData){
 
-        }
-      })
-    });
-  },
+      checkUserSolution(itemData, solutionToSave);
 
-  get: function(controllerCallback, param) {
-    if (param) {
-      IntervieweeSolutionModel.find(param, function(err, itemData) {
-        if (err) console.log(err);
+      console.log(solutionToSave);
 
-        controllerCallback([itemData]);
-      });
-    } else {
-      IntervieweesModel.find(function(err, collectionData) {
-        console.log(collectionData)
-        if (err) console.log(err);
-        console.log(collectionData.toString());
-
-        controllerCallback(collectionData);
-      });
-    }
-  },
-
-  unset: function() {
-
-  },
-
-  unsetAll: function() {  //ToDo This method is only for development
-    this.get(function(collectionData) {
-      _.each(collectionData, function(itemData) {
-        itemData.remove(function(err) {
-          if (err) {
-            console.log("problem isn't removed");
-          } else {
-            console.log("problem is removed");
-          }
-        })
+      var model = self.schema(solutionToSave);
+      model.save(function(err){
+        if(err) console.log(err);
+        controllerCallback([solutionToSave])
       });
     });
   }
-};
+}, baseModel);
+
+model.setSchema(IntervieweeSolutionSchema);
 
 module.exports = model;
-// CMD
 
-if(opts.path){
-  var filePath = "/media/user/web_drive/PROJECT/JSCUT/serverSide/app/db/"+opts.path;
-  fs.readFile(filePath, function(err, content){
-    var obj = JSON.parse(content);
-    model.set(obj);
-  });
-}
+var checkUserSolution = function checkUserSolution(checkingProblem, solutionObj){ //problem -- from user
+                                                                                  //checkingProblem -- from db
+      var problemIsFailed = 0;
+      var result;
 
-if(opts.get){
-  console.log("get");
-  if(_.isNumber(opts.id)){
-    model.get(function(itemData){
-      console.log(itemData.toString());
-    }, {id: opts.id});
-  }else{
-    model.get(function(collectionData){
-      console.log(collectionData.toString());
-    });
-  }
-}
+      if(_.isArray(solutionObj.solution)){
+        for(var i=0; i < solutionObj.solution.length; i++){
+          if(solutionObj.type === "evaluate"){
+            try {
+              result = eval(solutionObj.solution[i]);
+            } catch (e) {
+              result = false;
+            }
+          }else{
+            result = solutionObj.solution[i]
+          }
 
+          console.log(result);
+
+          var problemSolution = _.isNaN(parseInt(result))
+            ? result
+            : parseInt(result);
+
+          //console.log(checkingProblem);
+          //console.log(checkingProblem.solution);
+          //console.log(checkingProblem.rightSolution.indexOf(problemSolution));
+
+          if(checkingProblem.rightSolution.indexOf(problemSolution) > -1){
+            problemIsFailed += 1;
+          }else{
+            problemIsFailed = 0;
+            break;
+          }
+        }
+      }
+
+      if(_.isArray(solutionObj.solution) && solutionObj.solution.length && problemIsFailed === checkingProblem.rightSolution.length){
+        solutionObj.isSolved = checkingProblem.points;
+      } else {
+        solutionObj.isSolved = 0;
+      }
+      console.log(solutionObj.isSolved);
+  return solutionObj;
+};

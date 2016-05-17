@@ -10,11 +10,15 @@ module.exports = {
     intervieweeTestSuiteModel.get(callback,{id:id});
   },
 
+  getById: function(callback, id){
+    intervieweeTestSuiteModel.getById(callback, id);
+  },
+
   unset: function(){
 
   },
 
   getTestSuite: function(callback, id){
-    this.get(callback, id);
+    this.getById(callback, id);
   }
 };

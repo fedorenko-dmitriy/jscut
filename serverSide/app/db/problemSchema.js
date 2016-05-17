@@ -9,8 +9,6 @@ var schema  = new Schema({
   name: String,
   description: String,
   variantsOfSolutions: Array,
-  isSolved: Number,
-  userSolution: Array, //ToDo  UserSolutionSchema??????
   rightSolution: Array,
   points: Number,
   hint : String
@@ -18,4 +16,4 @@ var schema  = new Schema({
 
 
 module.exports = mongoose.model("problem", schema);
-//module.exports.schema = schema;
+
