@@ -1,8 +1,7 @@
 "use strict";
 var mongoose = require("../libs/mongoose");
 
-var Schema = mongoose.Schema;
-var schema  = new Schema({
+var Schema = new mongoose.Schema({
   id: {type:Number, unique: true},
   interviewee_id: Number,
   testSuite_id: Number,
@@ -12,6 +11,6 @@ var schema  = new Schema({
 });
 
 
-module.exports = mongoose.model("intervieweeTestSuite", schema);
+module.exports = mongoose.model("intervieweeTestSuite", Schema);
 
 

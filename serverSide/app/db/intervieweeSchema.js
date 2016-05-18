@@ -1,9 +1,7 @@
 "use strict";
 var mongoose = require("../libs/mongoose");
-//var testSuites = require("testSuitesSchema"); //ToDo should be imported from testSuitesSchema
 
-var Schema = mongoose.Schema;
-var schema  = new Schema({
+var Schema = new mongoose.Schema({
   id: {type:Number, unique: true},
   nickName: String,
   level: Number,
@@ -12,4 +10,4 @@ var schema  = new Schema({
 });
 
 
-module.exports = mongoose.model("interviewee", schema);
+module.exports = mongoose.model("interviewee", Schema);

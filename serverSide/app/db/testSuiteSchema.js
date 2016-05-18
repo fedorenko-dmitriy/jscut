@@ -1,7 +1,6 @@
 var mongoose = require("../libs/mongoose");
 
-var Schema = mongoose.Schema;
-var schema  = new Schema({
+var Schema = new mongoose.Schema({
   id: {type:Number, unique: true},
   name : String,
   problems : Array,
@@ -10,4 +9,4 @@ var schema  = new Schema({
 });
 
 
-module.exports = mongoose.model("testSuite", schema);
+module.exports = mongoose.model("testSuite", Schema);
