@@ -38,8 +38,21 @@ var model = {
     });
   },
 
-  update: function() {
-    // ToDo:  this method has to implement
+  update: function(controllerCallback, params) {
+    this.schema.find({id: params.id}, function(err, itemData) {
+      if(err) console.log(err);
+
+      _.each(params, function(value, key){
+        itemData[key] = value;
+      });
+
+      itemData.save(function(err, affectedData) {
+        if (err) console.log(err);
+
+        controllerCallback(affectedData);
+      });
+
+    });
   },
 
   remove: function(controllerCallback, param) {
