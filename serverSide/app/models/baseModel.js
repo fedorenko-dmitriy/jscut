@@ -1,4 +1,5 @@
 "use strict";
+
 var _ = require("underscore");
 var mongoose = require("../libs/mongoose");
 
@@ -64,7 +65,7 @@ var model = {
     mongoose.connection.on("open", function(){
       console.log(mongoose.connection.readyState)
 
-      mongoose.connection.db.dropDatabase(function(err, result) {
+      mongoose.connection.db.dropDatabase(function(err, result) { //ToDo
         console.log("zzzzzz")
         if(err){
           console.log(err);
@@ -79,3 +80,18 @@ var model = {
 };
 
 module.exports = model;
+
+(function(){
+  var methodToProxy=["create", "read", "update", "remove"];
+  _.each(methodToProxy, function(method){
+    var proxied = model[method];
+    model[method] = function(controllerCallback){
+      if(!model.schema || _.isArray(model.schema) || !_.isObject(model.schema)) throw "Should define schema as object";
+
+      if(!controllerCallback || !_.isFunction(controllerCallback)) throw "Should define first argument as function";
+
+      return proxied.aplly(this, arguments);
+    }
+  });
+
+})();
