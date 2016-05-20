@@ -3,7 +3,7 @@ var _ = require("underscore");
 var IntervieweeSolutionSchema = require("../db/intervieweeSolutionSchema");
 var ProblemSchema = require("../db/problemSchema");
 
-var baseModel = require("./baseModel");
+var BaseModel = require("./BaseModel");
 
 var model = _.extend({
   checkIntervieweeSolution: function(controllerCallback, requestObj){
@@ -29,7 +29,7 @@ var model = _.extend({
       });
     });
   }
-}, baseModel);
+}, new BaseModel());
 
 model.setSchema(IntervieweeSolutionSchema);
 

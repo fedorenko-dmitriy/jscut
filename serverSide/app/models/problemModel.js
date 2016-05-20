@@ -2,9 +2,9 @@
 var _ = require("underscore");
 var ProblemSchema = require("../db/problemSchema");
 
-var baseModel = require("./baseModel");
+var BaseModel = require("./BaseModel");
 
-var model = _.extend({}, baseModel);
+var model = _.extend({}, new BaseModel());
 
 model.setSchema(ProblemSchema);
 

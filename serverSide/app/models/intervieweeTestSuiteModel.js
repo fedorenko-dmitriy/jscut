@@ -2,7 +2,7 @@
 var _ = require("underscore");
 var async = require("async");
 
-var baseModel = require("./baseModel");
+var BaseModel = require("./BaseModel");
 
 var IntervieweeTestSuiteSchema = require("../db/intervieweeTestSuiteSchema");
 var TestSuiteSchema = require("../db/testSuiteSchema");
@@ -57,7 +57,7 @@ var model = _.extend({
       });
     });
   }
-}, baseModel);
+}, new BaseModel());
 
 module.exports = model;
 

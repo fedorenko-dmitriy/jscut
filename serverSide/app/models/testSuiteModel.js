@@ -2,20 +2,20 @@
 var _ = require("underscore");
 var TestSuiteSchema = require("../db/testSuiteSchema");
 
-var baseModel = require("./baseModel");
+var BaseModel = require("./BaseModel");
 
 var problemModel = require("./problemModel");
 
 var model = _.extend({
   get: function(controllerCallback, param) {
     if (param) {
-      self.schema.find(param, function(err, testSuiteData) {
+      this.schema.find(param, function(err, testSuiteData) {
         if (err) console.log(err);
         testSuiteData.problems = getProblemById(testSuiteData.problems);
         controllerCallback([testSuiteData]);
       });
     } else {
-      self.schema.find(function(err, testSuitesData) {
+      this.schema.find(function(err, testSuitesData) {
         console.log(testSuitesData)
         if (err) console.log(err);
 
@@ -29,7 +29,7 @@ var model = _.extend({
       });
     }
   }
-}, baseModel);
+}, new BaseModel());
 
 model.setSchema(TestSuiteSchema);
 
