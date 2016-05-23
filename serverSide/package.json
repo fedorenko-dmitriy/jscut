@@ -14,6 +14,8 @@
     "grunt-mocha": "latest",
     "grunt-mocha-test": "latest",
     "grunt-cli": "latest",
-    "chai": "latest"
+    "chai": "latest",
+    "sinon": "latest",
+    "console.table": "latest"
   }
 }

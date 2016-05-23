@@ -9,6 +9,8 @@ function BaseModel(){
 }
 
 BaseModel.prototype = {
+  mongoose: mongoose,
+
   setSchema: function(schema){
     this.schema = schema;
   },
@@ -23,84 +25,93 @@ BaseModel.prototype = {
   },
 
   create: function(controllerCallback, collectionData) {
-    var schema = this.getSchema();
+    var self = this;
+    var Schema = this.getSchema();
     this._checkArguments("create", arguments);
     var affectedRowsArr = [];
 
     async.forEachOf(collectionData, function(itemData, key, callback) {
 
-      var model = schema(itemData);
+      var model = new Schema(itemData);
       model.save(function(err, affectedRow) {
         if (err) {
-          console.log("problem isn't saved");
+          console.log("item isn't saved");
           throw err;
         } else {
           affectedRowsArr.push(affectedRow);
-          console.log("problem is saved");
+          console.log("item is saved");
         }
       });
 
     }, function(err){
       if (err) console.error(err.message);
       controllerCallback(affectedRowsArr);
-      mongoose.disconnect();
+      self.mongoose.disconnect();
     });
   },
 
   read: function(controllerCallback, param) {
+    var self = this;
     param = param || {};
 
-    var schema = this.getSchema();
+    var Schema = this.getSchema();
+    console.log(Schema);
+
     this._checkArguments("read", arguments);
-    schema.find(param, function(err, itemData) {
+
+    Schema.find(param, function(err, itemData) {
       if (err) console.log(err);
-      console.log("aaaa1111")
-      controllerCallback(err, itemData);
-      mongoose.disconnect();
+
+      controllerCallback(itemData);
+      self.mongoose.disconnect();
     });
   },
 
   update: function(controllerCallback, params, options) {
+    var self = this;
     options = options || {};
 
-    var schema = this.getSchema();
+    var Schema = this.getSchema();
     this._checkArguments("update", arguments);
 
-    schema.findOneAndUpdate({id: params.id}, params, options, function(err, affectedData) { //return
+    Schema.findOneAndUpdate({id: params.id}, params, options, function(err, affectedData) { //return
       if(err) console.log(err);
 
       controllerCallback(affectedData);
-      mongoose.disconnect();
+      self.mongoose.disconnect();
     });
   },
 
   remove: function(controllerCallback, param) {
-    var schema = this.getSchema();
+    var self = this;
+    var Schema = this.getSchema();
     this._checkArguments("remove", arguments);
 
-    schema.remove(param, function(err, result) {
+    Schema.remove(param, function(err, result) {
       if (err) {
         console.log("item isn't removed");
       } else {
         console.log("item is removed");
         controllerCallback(result);
       }
-      mongoose.disconnect();
+      self.mongoose.disconnect();
     });
   },
 
   drop: function(controllerCallback){
-    var schema = this.getSchema();
+    var self = this;
+    var Schema = this.getSchema();
 
-    mongoose.connection.on("open", function(db){
-    schema.collection.drop(function(err, result) {
+    this.mongoose.connection.on("open", function(db){
+      Schema.collection.drop(function(err, result) {
         if(err){
           console.log(err);
         }else{
           console.log(result);
           controllerCallback()
         }
-        mongoose.disconnect();
+
+        self.mongoose.disconnect();
       });
     });
   },
@@ -108,9 +119,12 @@ BaseModel.prototype = {
   _checkArguments: function(methodName, args){
     _.each(args, function(arg){
       if(!args[0] || !_.isFunction(args[0])) throw "Should define first argument as function";
-      if(methodName === "create" && (!args[1]|| !_.isArray(args[1]))){throw "Should define second argument as array";}
-      if(methodName === "read" && (!args[1]|| _.isArray(args[1]) || !_.isObject(args[1]))){throw "Should define second argument as object";}
-      if(methodName === "remove" && (!args[1]|| !_.isArray(args[1]))){throw "Should define second argument as array";}
+
+      switch (methodName){
+        case "create" : if(!args[1]|| !_.isArray(args[1])){throw "Should define second argument as array";}break;
+        case "read" : if(!args[1]|| _.isArray(args[1]) || !_.isObject(args[1])) {throw "Should define second argument as object";} break;
+        case "remove" : if(!args[1]|| _.isArray(args[1]) || !_.isObject(args[1])){throw "Should define second argument as object"; } break;
+      }
     });
   }
 };
