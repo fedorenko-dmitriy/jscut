@@ -1,8 +1,15 @@
 var nconf = require("nconf");
 var path = require("path");
 
-nconf.argv()
-  .env()
-  .file({file: path.join(__dirname, 'config.json')});
+module.exports.init = function(customConfigName) {
 
-module.exports = nconf;
+  var configName = customConfigName ? customConfigName+".json" : 'mainConfig.json';
+
+  nconf.argv()
+    .env()
+    .file({file: path.join(__dirname, configName)});
+
+  module.exports = nconf;
+
+  return nconf;
+};

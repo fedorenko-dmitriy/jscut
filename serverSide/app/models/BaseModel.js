@@ -1,37 +1,47 @@
 "use strict";
 
-var _ = require("underscore");
+let _ = require("underscore");
 var mongoose = require("../libs/mongoose");
 var async = require("async");
 
 function BaseModel(){
-
+  this.schema ={};
 }
 
 BaseModel.prototype = {
   mongoose: mongoose,
 
-  setSchema: function(schema){
-    this.schema = schema;
+  setSchema: function(name, schema){
+    if(typeof name === "function"){
+      this.schema.base = name;
+    }else if(_.isString(name) && typeof schema === "function"){
+      this.schema[name] = schema;
+    }
   },
 
-  getSchema: function() {
-    if(!this.schema || _.isArray(this.schema) || !_.isObject(this.schema)) {
-      throw "Should define schema as object"}
+  getSchema: function(name) {
+    if(!name){
+      return this.schema.base;
+    }
+    else if(!name && (!this.schema.base || _.isArray(this.schema.base) || !_.isObject(this.schema.base))) {
+      throw "Should define schema as object"
+    }
     else{
-      return this.schema;
+      if(!this.schema[name] || _.isArray(this.schema[name]) || !_.isObject(this.schema[name])) {
+        throw "Should define schema as object"}
+      else{
+        return this.schema[name];
+      }
     }
 
   },
 
   create: function(controllerCallback, collectionData) {
-    var self = this;
     var Schema = this.getSchema();
     this._checkArguments("create", arguments);
     var affectedRowsArr = [];
 
     async.forEachOf(collectionData, function(itemData, key, callback) {
-
       var model = new Schema(itemData);
       model.save(function(err, affectedRow) {
         if (err) {
@@ -40,50 +50,44 @@ BaseModel.prototype = {
         } else {
           affectedRowsArr.push(affectedRow);
           console.log("item is saved");
+          callback();
         }
       });
 
     }, function(err){
       if (err) console.error(err.message);
       controllerCallback(affectedRowsArr);
-      self.mongoose.disconnect();
     });
   },
 
   read: function(controllerCallback, param) {
-    var self = this;
     param = param || {};
 
     var Schema = this.getSchema();
-    console.log(Schema);
-
     this._checkArguments("read", arguments);
 
     Schema.find(param, function(err, itemData) {
+
+      console.log(param)
       if (err) console.log(err);
 
       controllerCallback(itemData);
-      self.mongoose.disconnect();
     });
   },
 
   update: function(controllerCallback, params, options) {
-    var self = this;
-    options = options || {};
+    options = options || {new:true};
 
     var Schema = this.getSchema();
     this._checkArguments("update", arguments);
 
-    Schema.findOneAndUpdate({id: params.id}, params, options, function(err, affectedData) { //return
+    Schema.findOneAndUpdate({id: params.id}, params, options, function(err, affectedData) {
       if(err) console.log(err);
-
       controllerCallback(affectedData);
-      self.mongoose.disconnect();
     });
   },
 
   remove: function(controllerCallback, param) {
-    var self = this;
     var Schema = this.getSchema();
     this._checkArguments("remove", arguments);
 
@@ -94,12 +98,10 @@ BaseModel.prototype = {
         console.log("item is removed");
         controllerCallback(result);
       }
-      self.mongoose.disconnect();
     });
   },
 
   drop: function(controllerCallback){
-    var self = this;
     var Schema = this.getSchema();
 
     this.mongoose.connection.on("open", function(db){
@@ -110,13 +112,11 @@ BaseModel.prototype = {
           console.log(result);
           controllerCallback()
         }
-
-        self.mongoose.disconnect();
       });
     });
   },
 
-  _checkArguments: function(methodName, args){
+  _checkArguments: function(methodName, args){console.log(args);
     _.each(args, function(arg){
       if(!args[0] || !_.isFunction(args[0])) throw "Should define first argument as function";
 

@@ -22,6 +22,7 @@ module.exports = {
 
   stop: function(){
     clearInterval(timerHandler);
+    timer.testIsEnded = true;
     return timeStamp();
   }
 };

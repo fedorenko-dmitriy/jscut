@@ -4,6 +4,7 @@ var mongoose = require("../libs/mongoose");
 var Schema = new mongoose.Schema({
   interviewee_id : Number,
   problem_id : Number,
+  testSuite_id: Number,
   solution: Array,
   isSolved: Number
 });

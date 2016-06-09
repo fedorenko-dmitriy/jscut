@@ -1,14 +1,11 @@
 "use strict";
 
-let express = require("express");
-let http = require("http");
+var express = require("express");
+var http = require("http");
 var path = require("path");
-var config = require("./config").init();
-
-
+var config = require("../../app/config").init("testConfig");
 
 var app = express();
-
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,16 +15,11 @@ app.use(function(req, res, next){
   next();
 });
 
-require("./routes")(app);
+require("../../app/routes")(app);
 
-
-var timeController = require("./controllers/timeController");
-
-http.createServer(app).listen(config.get("port"), function(){
-  console.log("It works on port:"+config.get("port"))
-  require('../tests/mocks/createTestDB.js')(function(){})
+module.exports = http.createServer(app).listen(config.get("port"), function(){
+  console.log("It works on port:"+config.get("port"));
 });
-
 
 function setHeaders(res){
   res.setHeader('Access-Control-Allow-Origin', '*');

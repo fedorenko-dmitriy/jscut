@@ -1,81 +1,118 @@
 "use strict";
 var _ = require("underscore");
+var async = require("async");
 var IntervieweeSolutionSchema = require("../db/intervieweeSolutionSchema");
 var ProblemSchema = require("../db/problemSchema");
 
 var BaseModel = require("./BaseModel");
 
 var model = _.extend({
-  checkIntervieweeSolution: function(controllerCallback, requestObj){
+  checkIntervieweeSolution: function(controllerCallback, requestSolutionObj){
     var self = this;
 
-    var problemId = requestObj.problem_id;
-    var solutionToSave = {
-      interviewee_id: requestObj.interviewee_id,
-      problem_id: problemId,
-      solution: requestObj.solution,
-      isSolved: -1
-    };
-    ProblemSchema.findOne({id:problemId}, function(err, itemData){
+    this.privateMethods.setRequestSolutionObj(requestSolutionObj[0]);
 
-      checkUserSolution(itemData, solutionToSave);
+    async.waterfall([
 
-      console.log(solutionToSave);
+      _.bind(self.privateMethods.getRightProblemSolution, self),
 
-      var model = self.schema(solutionToSave);
-      model.save(function(err){
-        if(err) console.log(err);
-        controllerCallback([solutionToSave])
-      });
+      _.bind(self.privateMethods.prepareIntervieweeProblemSolutions, self),
+
+      _.bind(self.privateMethods.compareSolutions, self),
+
+      _.bind(self.privateMethods.saveIntervieweeSolution, self)
+
+    ], function(err, result){
+      controllerCallback(result);
     });
-  }
-}, new BaseModel());
+  },
 
-model.setSchema(IntervieweeSolutionSchema);
+  privateMethods: {
 
-module.exports = model;
+    setRequestSolutionObj: function(requestSolutionObj){
+      model.privateMethods.requestSolutionObj = requestSolutionObj;
+    },
 
-var checkUserSolution = function checkUserSolution(checkingProblem, solutionObj){ //problem -- from user
-                                                                                  //checkingProblem -- from db
-      var problemIsFailed = 0;
-      var result;
+    getRightProblemSolution: function (callback){
+      console.log("this.requestSolutionObj")
+      console.log(this)
+      model.getSchema("problemSchema").findOne({id:parseInt(model.privateMethods.requestSolutionObj.problem_id)}, function(err, itemData){
+        if(err) throw err;
+        callback(null, itemData.toObject())
+      });
+    },
 
-      if(_.isArray(solutionObj.solution)){
-        for(var i=0; i < solutionObj.solution.length; i++){
-          if(solutionObj.type === "evaluate"){
+    prepareIntervieweeProblemSolutions: function (itemData, callback){
+      var preparedSolution = [];
+
+      if(_.isArray(model.privateMethods.requestSolutionObj.solution)){
+        for(var i=0; i < model.privateMethods.requestSolutionObj.solution.length; i++){
+          var result;
+          if(model.privateMethods.requestSolutionObj.type === "evaluate"){
             try {
-              result = eval(solutionObj.solution[i]);
+              result = eval(model.privateMethods.requestSolutionObj.solution[i]);
             } catch (e) {
-              result = false;
+              throw e;
             }
           }else{
-            result = solutionObj.solution[i]
+            result = model.privateMethods.requestSolutionObj.solution[i]
           }
-
-          console.log(result);
 
           var problemSolution = _.isNaN(parseInt(result))
             ? result
             : parseInt(result);
 
-          //console.log(checkingProblem);
-          //console.log(checkingProblem.solution);
-          //console.log(checkingProblem.rightSolution.indexOf(problemSolution));
-
-          if(checkingProblem.rightSolution.indexOf(problemSolution) > -1){
-            problemIsFailed += 1;
-          }else{
-            problemIsFailed = 0;
-            break;
-          }
+          preparedSolution.push(problemSolution)
         }
       }
 
-      if(_.isArray(solutionObj.solution) && solutionObj.solution.length && problemIsFailed === checkingProblem.rightSolution.length){
-        solutionObj.isSolved = checkingProblem.points;
-      } else {
-        solutionObj.isSolved = 0;
+      var preparedSolutionObj = {
+        interviewee_id: model.privateMethods.requestSolutionObj.interviewee_id,
+        problem_id: model.privateMethods.requestSolutionObj.problem_id,
+        testSuite_id: model.privateMethods.requestSolutionObj.testSuite_id,
+        solution: preparedSolution,
+        isSolved: -1
+      };
+
+      callback(null, itemData, preparedSolutionObj);
+    },
+
+    compareSolutions: function (itemData, preparedSolution, callback){
+      var rightSolution = itemData["rightSolution"];
+      var intervieweeSolution = preparedSolution["solution"];
+
+      var problemsIsSolved = _.intersection(rightSolution, intervieweeSolution).length;
+      console.log(problemsIsSolved)
+
+      if(rightSolution.length === problemsIsSolved && rightSolution.length===intervieweeSolution.length){
+        preparedSolution.isSolved = itemData.points;
+      }else{
+        preparedSolution.isSolved = 0;
       }
-      console.log(solutionObj.isSolved);
-  return solutionObj;
-};
+
+      callback(null, preparedSolution)
+    },
+
+    saveIntervieweeSolution: function (preparedSolutionObj, callback){
+      model.getSchema().findOneAndUpdate(
+        {
+          interviewee_id: parseInt(preparedSolutionObj.interviewee_id),
+          problem_id: parseInt(preparedSolutionObj.problem_id),
+          testSuite_id: parseInt(preparedSolutionObj.testSuite_id)
+        },
+        preparedSolutionObj,
+        {upsert:true, new: true},
+        function(err, affectedData) {
+          if(err) console.log(err);
+          console.log()
+          callback(err, _.omit(affectedData.toObject(), ['_id', "__v"]));
+        }
+      );
+    }
+  }
+}, new BaseModel());
+
+model.setSchema(IntervieweeSolutionSchema);
+model.setSchema("problemSchema", ProblemSchema);
+
+module.exports = model;

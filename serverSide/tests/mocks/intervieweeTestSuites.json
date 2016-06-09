@@ -1,0 +1,17 @@
+[
+  {
+    "id":1,
+    "interviewee_id" : 1,
+    "testSuite_id" : 1,
+    "interviewee_solutions":[],
+    "score":-1
+  },
+
+  {
+    "id":2,
+    "interviewee_id" : 2,
+    "testSuite_id" : 2,
+    "interviewee_solutions":[],
+    "score":-1
+  }
+]

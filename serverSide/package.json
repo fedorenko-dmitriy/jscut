@@ -2,6 +2,7 @@
   "name": "application-name",
   "version": "0.0.1",
   "devDependencies": {
+    "winston": "latest",
     "underscore": "~1.6.0",
     "express": "latest",
     "nconf": "latest",
@@ -16,6 +17,7 @@
     "grunt-cli": "latest",
     "chai": "latest",
     "sinon": "latest",
-    "console.table": "latest"
+    "console.table": "latest",
+    "request": "latest"
   }
 }

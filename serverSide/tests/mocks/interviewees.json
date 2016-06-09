@@ -8,7 +8,7 @@
   },
   {
     "id": 2,
-    "nickName": "Tom",
+    "nickName": "Alex",
     "level": 3,
     "skillType": 3,
     "testSuites": [1]

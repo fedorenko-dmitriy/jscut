@@ -3,6 +3,7 @@
 var _ = require('underscore');
 var opts = require('optimist').argv;
 var fs = require('fs');
+var consoleTable = require("console.table");
 
 
 var intervieweeModel = require("./models/intervieweeModel");
@@ -27,16 +28,12 @@ var testSuiteModel = require("./models/testSuiteModel");
 
 
 // get params
-var moduleName;
-var actionName;
-var path;
-var table;
-var param;
 
-moduleName = opts._[0];
-actionName = opts._[1];
-param = opts.param;
-path = opts.path;
+var table;
+var moduleName = opts._[0];
+var actionName = opts._[1];
+var param = opts.param;
+var path = opts.path;
 
 // switch case
 var module;
@@ -65,7 +62,7 @@ switch (actionName){
 
 if(path){
   var filePath = "/media/user/web_drive/PROJECT/JSCUT/serverSide/app/public/"+opts.path;
-  console.log(filePath)
+
   fs.readFile(filePath, function(err, content){
     if(err) throw err;
     param = JSON.parse(content);
@@ -75,12 +72,10 @@ if(path){
   if(!param && actionName !=="get"){
     console.log("params must be defined")
   }
+  param = param || {};
   executeModuleMethod(param);
 }
 
-//console.log("param")
-//console.log(param)
-//console.log("======")
 
 function executeModuleMethod(param){
   param = param || "";
@@ -88,7 +83,19 @@ function executeModuleMethod(param){
   module[action](function(err, result){
     if(err) console.log(err);
 
-    console.log("Module"+moduleName+" do "+actionName+"successful");
+    console.log("Module "+moduleName+" do "+actionName+" successful");
+    var modResult = [];
+    if(result){
+      if(result.toObject){
+        modResult = result.toObject();
+      }else if(result[0].toObject){
+        _.each(result, function(item){
+          modResult.push(item.toObject());
+        });
+      }else{
+        modResult = result;
+      }
+    }
   },param);
-};
+}
 
