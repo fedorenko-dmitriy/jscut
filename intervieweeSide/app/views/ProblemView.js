@@ -12,7 +12,8 @@ export let ProblemView = Backbone.View.extend({
   className: "problem",
   initialize: function(options) {
     options = options||{};
-    this.model = options.model || new Backbone.Model();
+    this.solutionModel = options.solutionModel || new Backbone.Model();
+    this.problemModel = options.problemModel || new Backbone.Model();
     this._initEvents();
   },
 
@@ -22,7 +23,7 @@ export let ProblemView = Backbone.View.extend({
   },
 
   _initEvents: function(){
-    this.listenTo(this.model, "change:isSolved", this._showNotification);
+    this.listenTo(this.solutionModel, "change:isSolved", this._showNotification);
 
     this.on("method::_setSolutionToTheModel", this._setSolutionToTheModel);
     this.on("method::_setMultiSolutionToTheModel", this._setMultiSolutionToTheModel);
@@ -46,10 +47,10 @@ export let ProblemView = Backbone.View.extend({
     this.$(".answers").removeClass("has-success")
                    .removeClass("has-error");
 
-    if(parseInt(this.model.get("isSolved")) == 1){
+    if(parseInt(this.solutionModel.get("isSolved")) == 1){
       this.$(".success").addClass("show");
       this.$(".answers").addClass("has-success");
-    } else if(parseInt(this.model.get("isSolved")) == 0){
+    } else if(parseInt(this.solutionModel.get("isSolved")) == 0){
       this.$(".error").addClass("show");
       this.$(".answers").addClass("has-error");
     } else {
@@ -68,25 +69,25 @@ export let ProblemView = Backbone.View.extend({
   /*API*/
 
   render: function() {
-    this.$el.html(template(this.model.toJSON()));
+    this.$el.html(template(this.problemModel.toJSON()));
     return this;
   },
 
   /*Controller*/
 
   _setSolutionToTheModel: function(value){
-    this.model.set("userSolution",[value], {silent:true})
+    this.solutionModel.set("solution",[value], {silent:true})
   },
 
   _setMultiSolutionToTheModel: function(value){
-    let userSolution = this.model.get("userSolution");
+    let userSolution = this.solutionModel.get("solution");
     if(_.indexOf(userSolution, value)>-1){
       userSolution = _.without(userSolution, value)
     }else{
       userSolution.push(value)
     }
 
-    this.model.set("userSolution", userSolution, {silent:true})
+    this.solutionModel.set("solution", userSolution, {silent:true})
   }
 }).extend(displayMixin);
 

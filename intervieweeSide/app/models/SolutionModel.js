@@ -7,7 +7,7 @@ let _ = require('underscore');
 let Backbone = require('backbone');
 Backbone.$ = $;
 
-export let ProblemModel = Backbone.Model.extend({
+export let SolutionModel = Backbone.Model.extend({
   initialize: function(){
 
   }

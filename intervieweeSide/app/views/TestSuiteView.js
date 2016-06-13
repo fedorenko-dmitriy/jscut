@@ -71,6 +71,7 @@ export let TestSuiteView = Backbone.View.extend(_.extend({
     let dfd = $.Deferred();
 
     this.testSuiteService.getTestSuite().done(function(initTestSuiteData){
+      initTestSuiteData = initTestSuiteData[0];
       if(initTestSuiteData && initTestSuiteData.problems.length>0){
         self.setInitData(initTestSuiteData);
         dfd.resolve();
@@ -88,10 +89,13 @@ export let TestSuiteView = Backbone.View.extend(_.extend({
     this.timeService.start();   // ToDo test
 
     let problems = this.model.get("problems");
-
+    let solutions = this.model.get("solutions");
     if(problems.length>0){
-      problems.each(function(model){
-        let problemView = problemViewFactory.create(model);
+      problems.each(function(problemModel){
+        let solutionModel = solutions.findWhere({problem_id:problemModel.get("id")});
+
+        let problemView = problemViewFactory.create(problemModel, solutionModel);
+
         self.problemViews.push(problemView);
       });
 
@@ -131,7 +135,7 @@ export let TestSuiteView = Backbone.View.extend(_.extend({
 
   _checkSolutionHandler: function(){
     let self = this;
-    let model = this.currentView.model;
+    let model = this.currentView.solutionModel;
     this.testSuiteService.checkProblemSolution(model.toJSON()).done(function(result){
       result = JSON.parse(result);
       model.set(result);
