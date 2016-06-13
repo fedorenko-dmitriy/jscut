@@ -35,7 +35,7 @@ var model = _.extend({
 
     getRightProblemSolution: function (callback){
       console.log("this.requestSolutionObj")
-      console.log(this)
+      console.log(model.privateMethods)
       model.getSchema("problemSchema").findOne({id:parseInt(model.privateMethods.requestSolutionObj.problem_id)}, function(err, itemData){
         if(err) throw err;
         callback(null, itemData.toObject())

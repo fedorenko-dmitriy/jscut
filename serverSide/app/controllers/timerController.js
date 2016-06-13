@@ -1,6 +1,6 @@
 "use strict";
 var _ = require("underscore");
-var timeController = require("../controllers/timeController");
+var timeController = require("../models/timeModel");
 
 module.exports = {
   startTimer: function(req, res){
