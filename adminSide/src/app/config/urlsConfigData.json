@@ -1,0 +1,53 @@
+{
+  "baseUrl":"http://127.0.0.1:8080",
+  "interviewee":{
+    "create" : "/interviewees",
+    "readByQuery": "/interviewees",
+    "readById" : "/interviewee/",
+    "updateById" : "/interviewee/",
+    "deleteById" : "/interviewee/"
+  },
+
+  "intervieweeSolution":{
+    "create" : "/intervieweeSolutions",
+    "readByQuery": "/intervieweeSolutions",
+    "readById" : "/intervieweeSolution/",
+    "updateById" : "/intervieweeSolution/",
+    "deleteById" : "/intervieweeSolution/"
+  },
+
+  "intervieweeTestSuite":{
+    "create" : "/intervieweeTestSuites",
+    "readByQuery": "/intervieweeTestSuites",
+    "readById" : "/intervieweeTestSuite/",
+    "updateById" : "/intervieweeTestSuite/",
+    "deleteById" : "/intervieweeTestSuite/"
+  },
+
+  "problems":{
+    "create" : "/problems",
+    "readByQuery": "/problems",
+    "readById" : "/problem/",
+    "updateById" : "/problem/",
+    "deleteById" : "/problem/"
+  },
+
+  "testSuites":{
+    "create" : "/testSuites",
+    "readByQuery": "/testSuites",
+    "readById" : "/testSuite/",
+    "updateById" : "/testSuite/",
+    "deleteById" : "/testSuite/"
+  },
+
+  "timer":{
+    "startTimer" : "/startTimer",
+    "getTime": "/getTime",
+    "stopTimer" : "/stopTimer"
+  },
+
+  "public":{
+    "test": "/test/",
+    "checkSolution": "/checkSolution"
+  }
+}

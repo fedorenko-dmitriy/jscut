@@ -24,13 +24,13 @@ module.exports = function(app){
   app.get("/intervieweeSolutions", require("../controllers/intervieweeSolutionsController").getByQuery);
   app.get("/intervieweeSolution/:id", require("../controllers/intervieweeSolutionsController").getById);
 
-  app.delete("/intervieweeSolutions/:id", require("../controllers/intervieweeSolutionsController").deleteById);
+  app.delete("/intervieweeSolution/:id", require("../controllers/intervieweeSolutionsController").deleteById);
 
   /*IntervieweeTestSuite*/
   app.get("/intervieweeTestSuites", require("../controllers/intervieweeTestSuitesController").getByQuery);
   app.get("/intervieweeTestSuite/:id", require("../controllers/intervieweeTestSuitesController").getById);
 
-  app.post("/intervieweeTestSuite", require("../controllers/intervieweeTestSuitesController").post);
+  app.post("/intervieweeTestSuites", require("../controllers/intervieweeTestSuitesController").post);
   app.put("/intervieweeTestSuite/:id", require("../controllers/intervieweeTestSuitesController").put);
   app.delete("/intervieweeTestSuite/:id", require("../controllers/intervieweeTestSuitesController").deleteById);
 

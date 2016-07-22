@@ -410,7 +410,6 @@ var testSuitesData = require("./mocks/testSuites.json");
       it("should return array", function(done){
         request.get("http://localhost:8081/intervieweeTestSuites?interviewee_id=1", function(err, res, body){
           var result = JSON.parse(res.body);
-          console.log(result)
           expect(result).to.be.instanceof(Array);
           done();
         })
@@ -462,7 +461,7 @@ var testSuitesData = require("./mocks/testSuites.json");
     describe("route '/intervieweeTestSuite' method POST", function(){
       it("should add data to DB and return array", function(done){
         intervieweesData[0].id = 4;
-        request.post("http://localhost:8081/intervieweeTestSuite", {form:intervieweesData[0]}, function(err, res, body){
+        request.post("http://localhost:8081/intervieweeTestSuites", {form:intervieweesData[0]}, function(err, res, body){
           var result = JSON.parse(res.body);
           expect(result).to.be.instanceof(Array);
           done();
@@ -471,7 +470,7 @@ var testSuitesData = require("./mocks/testSuites.json");
 
       it("should add data to DB and return array with object with property id", function(done){
         intervieweesData[0].id = 5;
-        request.post("http://localhost:8081/intervieweeTestSuite", {form:intervieweesData[0]}, function(err, res, body){
+        request.post("http://localhost:8081/intervieweeTestSuites", {form:intervieweesData[0]}, function(err, res, body){
           var result = JSON.parse(res.body);
           expect(result[0].id).to.equal(5);
           done();
