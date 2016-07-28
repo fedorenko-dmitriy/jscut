@@ -74,6 +74,7 @@ let MainView = Backbone.View.extend({
   },
 
   _showResultPage: function(){
+    resultPageView.render();
     startPageView.hide();
     testSuiteView.hide();
     resultPageView.show();

@@ -4,12 +4,15 @@ let _ = require("underscore");
 let configs ={};
 
 import {urlConfig} from "./urlConfig.js";
+import {tableConfig} from "./tableConfig.js";
 
 let urlsConfigData = require("./urlsConfigData");
+let tablesConfigData = require("./tablesConfigData");
 
 (()=>{
 
   configs.urlConfig = urlConfig(urlsConfigData);
+  configs.tableConfig = tableConfig(tablesConfigData);
 
 })();
 

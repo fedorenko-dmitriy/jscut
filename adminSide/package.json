@@ -42,7 +42,12 @@
     "grunt-browserify-alias": "latest",
     "browserify-alias-grunt": "~0.1.0",
 
-    "brfs": "latest"
+    "brfs": "latest",
+
+    "backgrid": "latest",
+    "jquery" : "latest",
+    "backbone.modal" : "latest",
+    "backbone.marionette" : "latest"
 },
   "dependencies": {
   "express": "~4.1.0",

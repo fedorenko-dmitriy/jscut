@@ -1,43 +1,23 @@
 {
   "baseUrl":"http://127.0.0.1:8080",
-  "interviewee":{
-    "create" : "/interviewees",
-    "readByQuery": "/interviewees",
-    "readById" : "/interviewee/",
-    "updateById" : "/interviewee/",
-    "deleteById" : "/interviewee/"
+  "interviewees":{
+    "crud" : "/interviewees"
   },
 
-  "intervieweeSolution":{
-    "create" : "/intervieweeSolutions",
-    "readByQuery": "/intervieweeSolutions",
-    "readById" : "/intervieweeSolution/",
-    "updateById" : "/intervieweeSolution/",
-    "deleteById" : "/intervieweeSolution/"
+  "intervieweeSolutions":{
+    "crud" : "/intervieweeSolutions"
   },
 
-  "intervieweeTestSuite":{
-    "create" : "/intervieweeTestSuites",
-    "readByQuery": "/intervieweeTestSuites",
-    "readById" : "/intervieweeTestSuite/",
-    "updateById" : "/intervieweeTestSuite/",
-    "deleteById" : "/intervieweeTestSuite/"
+  "intervieweeTestSuites":{
+    "crud" : "/intervieweeTestSuites"
   },
 
   "problems":{
-    "create" : "/problems",
-    "readByQuery": "/problems",
-    "readById" : "/problem/",
-    "updateById" : "/problem/",
-    "deleteById" : "/problem/"
+    "crud" : "/problems"
   },
 
   "testSuites":{
-    "create" : "/testSuites",
-    "readByQuery": "/testSuites",
-    "readById" : "/testSuite/",
-    "updateById" : "/testSuite/",
-    "deleteById" : "/testSuite/"
+    "crud" : "/testSuites"
   },
 
   "timer":{

@@ -1,0 +1,25 @@
+{
+  "interviewees":[
+    {
+      "name": "id",
+      "label": "ID",
+      "cell": "number",
+      "editable": false
+    },
+    {
+      "name": "level",
+      "label": "Level",
+      "cell": "string"
+    },
+    {
+      "name": "nickName",
+      "label": "Name",
+      "cell": "string"
+    },
+    {
+      "name": "skillType",
+      "label": "skillType",
+      "cell": "number"
+    }
+  ]
+}

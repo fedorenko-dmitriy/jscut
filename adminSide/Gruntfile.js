@@ -17,8 +17,8 @@ module.exports = function(grunt) {
       },
       app: {
         src: [
-          '/src/app/*.js',
-          '/src/app/**/*.js'
+          'src/app/*.js',
+          'src/app/**/*.js'
         ],
         dest: 'build/app.js'
       }
@@ -31,7 +31,10 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'build_tmp/module.js': ['/src/app/**/*.js']
+          'build_tmp/module.js': [
+            'src/app/*.js',
+            'src/app/**/*.js'
+          ]
         }
       }
     },
