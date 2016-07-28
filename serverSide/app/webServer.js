@@ -20,8 +20,8 @@ app.use(function(req, res, next){
 
 require("./routes")(app);
 
-
-var timeController = require("./controllers/timeController");
+//
+//var timeController = require("./controllers/timerController");
 
 http.createServer(app).listen(config.get("port"), function(){
   console.log("It works on port:"+config.get("port"))
