@@ -1,7 +1,5 @@
 "use strict";
 
-
-
 let $ = require('jquery-untouched');
 let _ = require('underscore');
 let Backbone = require('backbone');
@@ -12,6 +10,9 @@ let Modal = require("backbone.modal");
 
 
 import {appModel} from "../models/AppModel";
+import {IntervieweeModal} from "./modals/intervieweeModal";
+import {IntervieweeModel} from "../models/IntervieweeModel.js";
+
 let config = require("../config");
 
 export let intervieweesView = new (Backbone.View.extend({
@@ -23,15 +24,10 @@ export let intervieweesView = new (Backbone.View.extend({
 
   _onAdd: function(){
     console.log("add");
-    retModal();
 
-    var modalView = new (retModal());
-    modalView.model = new Backbone.Model({
-      nickName: "",
-      level:"",
-      skillType: ""
-    });
-    appModel.get("interviewees").add(modalView.model);
+    var modalView = new IntervieweeModal();
+    modalView.model = new IntervieweeModel();
+
     $('.interviewees').append(modalView.render().el);
   },
 
@@ -39,14 +35,15 @@ export let intervieweesView = new (Backbone.View.extend({
 
     console.log("edit1");
 
-    var modalView = new (retModal(model));
+    var modalView = new IntervieweeModal();
     modalView.model = model || new Backbone.Model();
     $('.interviewees').append(modalView.render().el);
   },
 
   _onDelete: function(model){
-    model.destroy();
+    model.destroy({wait:true});
     console.log("delete")
+    console.log(model)
   },
 
   render: function(){
@@ -67,44 +64,3 @@ export let intervieweesView = new (Backbone.View.extend({
   }
 
 }))();
-
-function retModal(){
-
-  let template = _.template('<div class="bbm-modal__topbar">'+
-    '<h3 class="bbm-modal__title">Backbone.Modal</h3>'+
-    '</div>'+
-    '<div class="bbm-modal__section">'+
-      '<div class="form-group">'+
-        '<label for="input1">Name</label>'+
-        '<input type="text" class="form-control" id="nickName" placeholder="Enter name" value="<%= nickName %>">'+
-      '</div>'+
-
-      '<div class="form-group">'+
-        '<label for="input2">Level</label>'+
-        '<input type="text" class="form-control" id="level" placeholder="Enter level" value="<%= level %>">'+
-      '</div>'+
-
-      '<div class="form-group">'+
-        '<label for="input3">Skill</label>'+
-        '<input type="text" class="form-control" id="skillType" placeholder="Enter skill type" value="<%= skillType %>">'+
-      '</div>'+
-    '</div>'+
-    '<div class="bbm-modal__bottombar">'+
-      '<a href="#" class="bbm-button bbm-cancel">close</a>'+
-      '<a href="#" class="bbm-button bbm-submit">save</a>'+
-    '</div>');
-
-  return Backbone.Modal.extend({
-    template: template,
-    cancelEl: '.bbm-cancel',
-    submitEl: '.bbm-submit',
-    submit: function(){
-      this.$("input").each((key, item)=>{
-        this.model.set(item.id, item.value)
-      });
-
-      this.model.save();
-    }
-  });
-
-}
