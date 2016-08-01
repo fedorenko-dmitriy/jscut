@@ -9,7 +9,7 @@ let tmpl = require("../../templates/modals/intervieweeModalTpl.html");
 
 let Modal = require("backbone.modal");
 
-    let template = _.template(tmpl);
+let template = _.template(tmpl);
 
 export let IntervieweeModal = Backbone.Modal.extend({
         template: template,

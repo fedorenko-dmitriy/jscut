@@ -8,23 +8,17 @@ Backbone.$ = $;
 import {appModel} from "./models/AppModel";
 import {intervieweesView} from "./views/interviewee.js";
 
+let tmpl = require("./templates/layout/layoutTpl.html");
+
+let template = _.template(tmpl);
+
 console.log(appModel);
-
-
-
-
-
-appModel.get("interviewees").once("reset", function(e){
-  intervieweesView.render.apply(intervieweesView);
-
-  $(".container").append(intervieweesView.el);
-});
 
 let MainView = Backbone.View.extend({
   className: "container",
   model: appModel,
   initialize: function(){
-
+    this._initEvents();
   },
 
   _initEvents: function(){
@@ -32,13 +26,15 @@ let MainView = Backbone.View.extend({
   },
 
   renderSubViews: function(){
-    intervieweesView.render();
+    console.log("aaaaa")
+    this.$(".main").html(intervieweesView.render().el);
   },
 
   render: function(){
+    this.$el.html(template);
     $("body").append(this.$el);
   }
 });
 appModel.get("interviewees").fetch({reset: true});
 let mainView = new MainView();
-mainView.render()
+mainView.render();
