@@ -1,5 +1,5 @@
 "use strict";
-
+var config = require("../../app/config").init();
 var mongoose = require("../../app/libs/mongoose");
 var async = require("async");
 
@@ -16,12 +16,15 @@ var problemsData = require("../mocks/problems.json");
 var testSuitesData = require("../mocks/testSuites.json");
 
 function dropDatabase(callback){
-  var db = mongoose.connection.db;
+  mongoose.connection.on('open', function () {
+    var db = mongoose.connection.db;
 
-  db.dropDatabase(function(err){
-    if(err) throw err;
-    console.log("DB is dropped");
-    callback();
+    db.dropDatabase(function(err){
+      if(err) throw err;
+      console.log("DB is dropped");
+      callback();
+    });
+
   });
 }
 
@@ -110,8 +113,15 @@ module.exports = function(externalCallback){
     if(err) throw err;
 
     console.log("New DB is created!!!!!!!!!!!!!!!!");
-    externalCallback();
+    externalCallback && externalCallback();
   });
 };
+
+if (require.main === module) {
+  console.log('called directly');
+  module.exports();
+} else {
+  console.log('required as a module');
+}
 
 
