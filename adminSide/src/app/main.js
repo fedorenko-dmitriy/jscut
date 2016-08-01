@@ -11,7 +11,7 @@ import {intervieweesView} from "./views/interviewee.js";
 console.log(appModel);
 
 
-appModel.get("interviewees").fetch({reset: true});
+
 
 
 appModel.get("interviewees").once("reset", function(e){
@@ -39,6 +39,6 @@ let MainView = Backbone.View.extend({
     $("body").append(this.$el);
   }
 });
-
+appModel.get("interviewees").fetch({reset: true});
 let mainView = new MainView();
 mainView.render()

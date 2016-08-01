@@ -8,7 +8,10 @@
     "backbone": "~1.1.2",
     "backbone.marionette": "latest",
     "backbone.modal": "latest",
+    "backbone.paginator": "^2.0.5",
+    "backbone.paginator-browserify": "^0.9.0-dev",
     "backgrid": "latest",
+    "backgrid-paginator": "^0.3.9",
     "brfs": "latest",
     "browserify": "latest",
     "browserify-alias-grunt": "~0.1.0",
@@ -56,7 +59,8 @@
   },
   "browserify": {
     "transform": [
-      "hbsfy", "stringify",
+      "hbsfy",
+      "stringify",
       [
         "babelify",
         {
@@ -68,7 +72,11 @@
     ]
   },
   "stringify": {
-    "appliesTo": { "includeExtensions": [".html"] },
+    "appliesTo": {
+      "includeExtensions": [
+        ".html"
+      ]
+    },
     "minify": true
   }
 }
