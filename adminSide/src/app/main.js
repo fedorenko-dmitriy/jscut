@@ -15,7 +15,6 @@ let template = _.template(tmpl);
 console.log(appModel);
 
 let MainView = Backbone.View.extend({
-  className: "container",
   model: appModel,
   initialize: function(){
     this._initEvents();

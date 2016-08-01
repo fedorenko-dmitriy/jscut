@@ -14,6 +14,10 @@ import {appModel} from "../models/AppModel";
 import {IntervieweeModal} from "./modals/intervieweeModal";
 import {IntervieweeModel} from "../models/IntervieweeModel.js";
 
+//let tmpl = require("./templates/layout/layoutTpl.html");
+
+let template = _.template(require("../templates/pages/intervieweePageTpl.html"));
+
 let config = require("../config");
 
 export let intervieweesView = new (Backbone.View.extend({
@@ -58,7 +62,7 @@ export let intervieweesView = new (Backbone.View.extend({
     this.grid.body.columns.on("edit", this._onEdit);
     this.grid.body.columns.on("delete", this._onDelete);
 
-    this.$el.html('<button class="btn add">Add</button>');
+    this.$el.html(template);
 
     this.$el.append(this.grid.render().el);
 
