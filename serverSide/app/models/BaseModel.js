@@ -81,7 +81,7 @@ BaseModel.prototype = {
     var Schema = this.getSchema();
     this._checkArguments("update", arguments);
 
-    Schema.findOneAndUpdate({id: params.id}, params, options, function(err, affectedData) {
+    Schema.findOneAndUpdate({_id: params._id}, params, options, function(err, affectedData) {
       if(err) console.log(err);
       controllerCallback(affectedData);
     });

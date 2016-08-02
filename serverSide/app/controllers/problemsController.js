@@ -25,6 +25,7 @@ module.exports = {
   },
 
   put: function(req, res){
+    console.log(req.body)
     problemModel.update(function(response){
       res.end(JSON.stringify(response));
     }, req.body);

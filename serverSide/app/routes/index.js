@@ -7,51 +7,51 @@ module.exports = function(app){
   app.delete("/", require().delete);*/
 
   /*Interviewee access*/
-  app.get("/test/:id", require("../controllers/intervieweeTestSuitesController").getByIdAllData);
+  app.get("/test/:_id", require("../controllers/intervieweeTestSuitesController").getByIdAllData);
   app.post("/checkSolution", require("../controllers/intervieweeSolutionsController").checkSolution);
 
   /*Admin && moderator access*/
 
   /*Interviewee*/
   app.get("/interviewees", require("../controllers/intervieweeController").getByQuery);
-  app.get("/interviewees/:id", require("../controllers/intervieweeController").getById);
+  app.get("/interviewees/:_id", require("../controllers/intervieweeController").getById);
 
   app.post("/interviewees", require("../controllers/intervieweeController").post);
-  app.put("/interviewees/:id", require("../controllers/intervieweeController").put);
-  app.delete("/interviewees/:id", require("../controllers/intervieweeController").deleteById);
+  app.put("/interviewees/:_id", require("../controllers/intervieweeController").put);
+  app.delete("/interviewees/:_id", require("../controllers/intervieweeController").deleteById);
 
   app.put("/interviewees/", require("../controllers/intervieweeController").put);
   app.delete("/interviewees", require("../controllers/intervieweeController").deleteById);
 
   /*IntervieweeSolution*/
   app.get("/intervieweeSolutions", require("../controllers/intervieweeSolutionsController").getByQuery);
-  app.get("/intervieweeSolutions/:id", require("../controllers/intervieweeSolutionsController").getById);
+  app.get("/intervieweeSolutions/:_id", require("../controllers/intervieweeSolutionsController").getById);
 
-  app.delete("/intervieweeSolutions/:id", require("../controllers/intervieweeSolutionsController").deleteById);
+  app.delete("/intervieweeSolutions/:_id", require("../controllers/intervieweeSolutionsController").deleteById);
 
   /*IntervieweeTestSuite*/
   app.get("/intervieweeTestSuites", require("../controllers/intervieweeTestSuitesController").getByQuery);
-  app.get("/intervieweeTestSuites/:id", require("../controllers/intervieweeTestSuitesController").getById);
+  app.get("/intervieweeTestSuites/:_id", require("../controllers/intervieweeTestSuitesController").getById);
 
   app.post("/intervieweeTestSuites", require("../controllers/intervieweeTestSuitesController").post);
-  app.put("/intervieweeTestSuites/:id", require("../controllers/intervieweeTestSuitesController").put);
-  app.delete("/intervieweeTestSuites/:id", require("../controllers/intervieweeTestSuitesController").deleteById);
+  app.put("/intervieweeTestSuites/:_id", require("../controllers/intervieweeTestSuitesController").put);
+  app.delete("/intervieweeTestSuites/:_id", require("../controllers/intervieweeTestSuitesController").deleteById);
 
   /*Problem*/
   app.get("/problems", require("../controllers/problemsController").getByQuery);
-  app.get("/problems/:id", require("../controllers/problemsController").getById);
+  app.get("/problems/:problem_id", require("../controllers/problemsController").getById);
 
   app.post("/problems", require("../controllers/problemsController").post);
-  app.put("/problems/:id", require("../controllers/problemsController").put);
-  app.delete("/problems/:id", require("../controllers/problemsController").deleteById);
+  app.put("/problems/:_id", require("../controllers/problemsController").put);
+  app.delete("/problems/:_id", require("../controllers/problemsController").deleteById);
 
   /*TestSuite*/
   app.get("/testSuites", require("../controllers/testSuitesController").getByQuery);
-  app.get("/testSuites/:id", require("../controllers/testSuitesController").getById);
+  app.get("/testSuites/:_id", require("../controllers/testSuitesController").getById);
 
   app.post("/testSuites", require("../controllers/testSuitesController").post);
-  app.put("/testSuites/:id", require("../controllers/testSuitesController").put);
-  app.delete("/testSuites/:id", require("../controllers/testSuitesController").deleteById);
+  app.put("/testSuites/:_id", require("../controllers/testSuitesController").put);
+  app.delete("/testSuites/:_id", require("../controllers/testSuitesController").deleteById);
 
   /*Timer*/
   app.get("/startTimer", require("../controllers/timerController").startTimer);
