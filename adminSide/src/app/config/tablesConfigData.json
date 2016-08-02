@@ -1,7 +1,7 @@
 {
   "interviewees":[
     {
-      "name": "id",
+      "name": "interviewee_id",
       "label": "ID",
       "cell": "number",
       "editable": false
@@ -9,17 +9,77 @@
     {
       "name": "level",
       "label": "Level",
-      "cell": "string"
+      "cell": "string",
+      "editable": false
     },
     {
       "name": "nickName",
       "label": "Name",
-      "cell": "string"
+      "cell": "string",
+      "editable": false
     },
     {
       "name": "skillType",
       "label": "skillType",
-      "cell": "number"
+      "cell": "number",
+      "editable": false
+    },
+    {
+      "name": "testSuites",
+      "label": "Test Suites(array)",
+      "cell": "string",
+      "editable": false
+    }
+  ],
+
+  "problems": [
+    {
+      "name": "problem_id",
+      "label": "ID",
+      "cell": "number",
+      "editable": false
+    },
+    {
+      "name":  "type",
+      "label": "Type",
+      "cell": "string",
+      "editable": false
+    },
+    {
+      "name": "name",
+      "label": "Name",
+      "cell": "string",
+      "editable": false
+    },
+    {
+      "name": "description",
+      "label": "Description",
+      "cell": "string",
+      "editable": false
+    },
+    {
+      "name": "variantsOfSolutions",
+      "label": "Variants Of Solutions(array)",
+      "cell": "string",
+      "editable": false
+    },
+    {
+      "name": "rightSolution",
+      "label": "Right Solution(array)",
+      "cell": "string",
+      "editable": false
+    },
+    {
+      "name": "points",
+      "label": "Points",
+      "cell": "number",
+      "editable": false
+    },
+    {
+      "name": "hint",
+      "label": "Hint",
+      "cell": "string",
+      "editable": false
     }
   ]
 }
