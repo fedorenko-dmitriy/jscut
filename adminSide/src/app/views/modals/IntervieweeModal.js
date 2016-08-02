@@ -16,7 +16,7 @@ export let IntervieweeModal = Backbone.Modal.extend({
         cancelEl: '.bbm-cancel',
         submitEl: '.bbm-submit',
         submit: function(){
-            var attr = {}
+            var attr = {};
             this.$("input").each((key, item)=>{
                 attr[item.id] = item.value
             });

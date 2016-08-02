@@ -14,8 +14,6 @@ import {appModel} from "../models/AppModel";
 import {IntervieweeModal} from "./modals/intervieweeModal";
 import {IntervieweeModel} from "../models/IntervieweeModel.js";
 
-//let tmpl = require("./templates/layout/layoutTpl.html");
-
 let template = _.template(require("../templates/pages/intervieweePageTpl.html"));
 
 let config = require("../config");
