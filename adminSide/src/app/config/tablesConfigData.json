@@ -81,5 +81,32 @@
       "cell": "string",
       "editable": false
     }
+  ],
+
+  "testSuites": [
+    {
+      "name": "name",
+      "label": "Name",
+      "cell": "string",
+      "editable": false
+    },
+    {
+      "name": "problems",
+      "label": "Problems(array)",
+      "cell": "string",
+      "editable": false
+    },
+    {
+      "name": "timer",
+      "label": "Timer(object)",
+      "cell": "string",
+      "editable": false
+    },
+    {
+      "name": "description",
+      "label": "Description",
+      "cell": "string",
+      "editable": false
+    }
   ]
 }
