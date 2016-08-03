@@ -7,6 +7,7 @@ Backbone.$ = $;
 
 import {appModel} from "./models/AppModel";
 import {intervieweesView} from "./views/interviewee.js";
+import {problemsView} from "./views/problems.js";
 
 let tmpl = require("./templates/layout/layoutTpl.html");
 
@@ -21,12 +22,16 @@ let MainView = Backbone.View.extend({
   },
 
   _initEvents: function(){
-    this.listenTo(appModel.get("interviewees"), "reset", this.renderSubViews)
+    this.listenTo(appModel.get("interviewees"), "reset", this._renderIntervieweesPage);
+    this.listenTo(appModel.get("problems"), "reset", this._renderProblemsPage);
   },
 
-  renderSubViews: function(){
-    console.log("aaaaa")
+  _renderIntervieweesPage: function(){
     this.$(".main").html(intervieweesView.render().el);
+  },
+
+  _renderProblemsPage: function(){
+    this.$(".main").html(problemsView.render().el);
   },
 
   render: function(){
@@ -34,6 +39,9 @@ let MainView = Backbone.View.extend({
     $("body").append(this.$el);
   }
 });
-appModel.get("interviewees").fetch({reset: true});
+
+//appModel.get("interviewees").fetch({reset: true});
+appModel.get("problems").fetch({reset: true});
+
 let mainView = new MainView();
 mainView.render();
