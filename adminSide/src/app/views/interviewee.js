@@ -11,7 +11,7 @@ let Modal = require("backbone.modal");
 
 
 import {appModel} from "../models/AppModel";
-import {IntervieweeModal} from "./modals/intervieweeModal";
+import {IntervieweeModal} from "./modals/IntervieweeModal";
 import {IntervieweeModel} from "../models/IntervieweeModel.js";
 
 let template = _.template(require("../templates/pages/intervieweePageTpl.html"));
@@ -27,26 +27,25 @@ export let intervieweesView = new (Backbone.View.extend({
 
   _onAdd: function(){
     console.log("add");
-
-    var modalView = new IntervieweeModal();
-    modalView.model = new IntervieweeModel();
-
-    $('.interviewees').append(modalView.render().el);
+    problemsView._openModal();
   },
 
   _onEdit: function(model){
-
-    console.log("edit1");
-
-    var modalView = new IntervieweeModal();
-    modalView.model = model || new Backbone.Model();
-    $('.interviewees').append(modalView.render().el);
+    console.log("edit");
+    problemsView._openModal(model);
   },
 
   _onDelete: function(model){
+    console.log("delete");
+
     model.destroy({wait:true});
-    console.log("delete")
-    console.log(model)
+    console.log(model);
+  },
+  _openModal: function(model){
+
+    var modalView = new IntervieweeModal();
+    modalView.model = model ? model : new IntervieweeModel();
+    $('.interviewees').append(modalView.render().el);
   },
 
   render: function(){
