@@ -45,7 +45,7 @@ export let intervieweesView = new (Backbone.View.extend({
 
     var modalView = new IntervieweeModal();
     modalView.model = model ? model : new IntervieweeModel();
-    $('.interviewees').append(modalView.render().el);
+    this.$el.append(modalView.render().el);
   },
 
   render: function(){
