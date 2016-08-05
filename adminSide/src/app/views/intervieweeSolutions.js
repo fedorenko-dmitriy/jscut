@@ -12,15 +12,15 @@ let Modal = require("backbone.modal");
 let displayMixin = require('../mixins/displayMixin');
 
 import {appModel} from "../models/AppModel";
-import {ProblemModal} from "./modals/ProblemModal.js";
-import {ProblemModel} from "../models/ProblemModel.js";
+import {IntervieweeSolutionModal} from "./modals/IntervieweeSolutionModal.js";
+import {IntervieweeSolutionModel} from "../models/IntervieweeSolutionModel.js";
 
-let template = _.template(require("../templates/pages/problemsPageTpl.html"));
+let template = _.template(require("../templates/pages/intervieweesSolutionsPageTpl.html"));
 
 let config = require("../config");
 
-export let problemsView = new (Backbone.View.extend({
-  className: "problems",
+export let intervieweesSolutionsView = new (Backbone.View.extend({
+  className: "intervieweesSolutions",
 
   events: {
     "click button.add" : "_onAdd"
@@ -28,12 +28,12 @@ export let problemsView = new (Backbone.View.extend({
 
   _onAdd: function(){
     console.log("add");
-    problemsView._openModal();
+    intervieweesSolutionsView._openModal();
   },
 
   _onEdit: function(model){
     console.log("edit");
-    problemsView._openModal(model);
+    intervieweesSolutionsView._openModal(model);
   },
 
   _onDelete: function(model){
@@ -42,10 +42,10 @@ export let problemsView = new (Backbone.View.extend({
     model.destroy({wait:true});
     console.log(model);
   },
-
   _openModal: function(model){
-    var modalView = new ProblemModal();
-    modalView.model = model ? model : new ProblemModel();
+
+    var modalView = new IntervieweeSolutionModal();
+    modalView.model = model ? model : new IntervieweeSolutionModel();
     this.$el.append(modalView.render().el);
   },
 
@@ -53,8 +53,8 @@ export let problemsView = new (Backbone.View.extend({
 
     this.grid = new Backgrid.Grid({
       className: "table table-bordered",
-      columns: config.get("tableConfig", "problems"),
-      collection: appModel.get("problems")
+      columns: config.get("tableConfig", "intervieweeSolutions"),
+      collection: appModel.get("intervieweeSolutions")
     });
 
     this.grid.body.columns.on("edit", this._onEdit);
@@ -65,8 +65,6 @@ export let problemsView = new (Backbone.View.extend({
     this.$el.append(this.grid.render().el);
 
     this.renderPaginator();
-
-    console.log(appModel.get("problems").toJSON())
 
     return this;
   },
@@ -87,10 +85,15 @@ export let problemsView = new (Backbone.View.extend({
       // Whether sorting should go back to the first page
       goBackFirstOnSort: false, // Default is true
 
-      collection: appModel.get("problems")
+      collection: appModel.get("intervieweeSolutions")
     });
 
     this.$el.append(paginator.render().el);
+
+    //issues.fetch({reset: true});
   }
 
 }))();
+
+
+

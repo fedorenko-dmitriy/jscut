@@ -9,6 +9,7 @@ let Backgrid = require("backgrid");
 require("backgrid-paginator");
 let Modal = require("backbone.modal");
 
+let displayMixin = require('../mixins/displayMixin');
 
 import {appModel} from "../models/AppModel";
 import {IntervieweeModal} from "./modals/IntervieweeModal";
@@ -90,6 +91,14 @@ export let intervieweesView = new (Backbone.View.extend({
     this.$el.append(paginator.render().el);
 
     //issues.fetch({reset: true});
+  },
+
+  show: function(){
+    this.$el.show();
+  },
+
+  hide: function(){
+    this.$el.hide();
   }
 
 }))();

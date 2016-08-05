@@ -9,6 +9,7 @@ let Backgrid = require("backgrid");
 require("backgrid-paginator");
 let Modal = require("backbone.modal");
 
+let displayMixin = require('../mixins/displayMixin');
 
 import {appModel} from "../models/AppModel";
 import {TestSuiteModal} from "./modals/TestSuitesModal.js";

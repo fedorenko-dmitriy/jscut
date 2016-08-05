@@ -21,4 +21,3 @@ export let testSuitesCollection = new (Backbone.PageableCollection.extend({
 
 }))();
 
-

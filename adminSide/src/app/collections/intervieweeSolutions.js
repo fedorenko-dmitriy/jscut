@@ -5,6 +5,16 @@ let Backbone = require("backbone");
 
 let config = require("../config");
 
-export let intervieweeSolutionsCollection = new (Backbone.Collection.extend({
-  url: config.get("urlConfig", "intervieweeSolutions").crud
+import {IntervieweeSolutionModel} from "../models/IntervieweeSolutionModel.js";
+
+export let intervieweeSolutionsCollection = new (Backbone.PageableCollection.extend({
+  url: config.get("urlConfig", "intervieweeSolutions").crud,
+  model: IntervieweeSolutionModel,
+  mode: "client",
+
+  state: {
+    pageSize: 5,
+    order: 1
+  }
+
 }))();
